@@ -92,4 +92,41 @@ enum class RENDERER_API eStorageType {
 /// Returns the string representation of a given eStorageType
 RENDERER_API auto ToString(eStorageType dtype) -> std::string;
 
+/// Available wrapping modes for a texture
+enum class RENDERER_API eTextureWrap {
+    REPEAT,
+    REPEAT_MIRROR,
+    CLAMP_TO_EDGE,
+    CLAMP_TO_BORDER,
+};
+
+/// Returns the string representation of the given texture wrapping mode
+RENDERER_API auto ToString(eTextureWrap tex_wrap) -> std::string;
+
+/// Available texture filter options for a texture
+enum class RENDERER_API eTextureFilter {
+    NEAREST,
+    LINEAR,
+    NEAREST_MIPMAP_NEAREST,
+    LINEAR_MIPMAP_NEAREST,
+    NEAREST_MIPMAP_LINEAR,
+    LINEAR_MIPMAP_LINEAR,
+};
+
+/// Returns a string representation of the given texture filter option
+RENDERER_API auto ToString(eTextureFilter tex_filter) -> std::string;
+
+/// Available internal formats types for a texture
+enum class RENDERER_API eTextureIntFormat {
+    RED,
+    RG,
+    RGB,
+    RGBA,
+    DEPTH,
+    DEPTH_STENCIL,
+};
+
+/// Returns the string representation of the given internal format type
+RENDERER_API auto ToString(eTextureIntFormat tex_iformat) -> std::string;
+
 }  // namespace renderer

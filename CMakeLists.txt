@@ -59,7 +59,7 @@ loco_create_target(RendererCpp SHARED
     ${SOURCE_DIR}/backend/graphics/opengl/vertex_array_opengl_t.cpp
     ${SOURCE_DIR}/backend/graphics/opengl/index_buffer_opengl_t.cpp
     ${SOURCE_DIR}/backend/graphics/opengl/texture_data_opengl_t.cpp
-    # ${SOURCE_DIR}/core/texture_t.cpp
+    ${SOURCE_DIR}/backend/graphics/opengl/texture_opengl_t.cpp
     # ${SOURCE_DIR}/assets/shader_manager_t.cpp
     # ${SOURCE_DIR}/assets/texture_manager_t.cpp
     # ${SOURCE_DIR}/camera/camera_t.cpp

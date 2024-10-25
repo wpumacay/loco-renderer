@@ -15,7 +15,7 @@
 namespace renderer {
 namespace opengl {
 
-auto ToOpenGLEnum(const eTextureFormat& format) -> uint32_t {
+auto ToOpenGLEnum(eTextureFormat format) -> uint32_t {
     switch (format) {
         case eTextureFormat::RGB:
             return GL_RGB;
@@ -32,7 +32,7 @@ auto ToOpenGLEnum(const eTextureFormat& format) -> uint32_t {
     }
 }
 
-auto ToOpenGLEnum(const eStorageType& dtype) -> uint32_t {
+auto ToOpenGLEnum(eStorageType dtype) -> uint32_t {
     switch (dtype) {
         case eStorageType::UINT_8:
             return GL_UNSIGNED_BYTE;

@@ -157,4 +157,57 @@ auto ToString(eStorageType dtype) -> std::string {
     }
 }
 
+auto ToString(eTextureWrap tex_wrap) -> std::string {
+    switch (tex_wrap) {
+        case eTextureWrap::REPEAT:
+            return "repeat";
+        case eTextureWrap::REPEAT_MIRROR:
+            return "repeat_mirror";
+        case eTextureWrap::CLAMP_TO_EDGE:
+            return "clamp_to_edge";
+        case eTextureWrap::CLAMP_TO_BORDER:
+            return "clamp_to_border";
+        default:
+            return "undefined";
+    }
+}
+
+auto ToString(eTextureFilter tex_filter) -> std::string {
+    switch (tex_filter) {
+        case eTextureFilter::NEAREST:
+            return "nearest";
+        case eTextureFilter::LINEAR:
+            return "linear";
+        case eTextureFilter::NEAREST_MIPMAP_NEAREST:
+            return "nearest_mipmap_nearest";
+        case eTextureFilter::LINEAR_MIPMAP_NEAREST:
+            return "linear_mipmap_nearest";
+        case eTextureFilter::NEAREST_MIPMAP_LINEAR:
+            return "nearest_mipmap_linear";
+        case eTextureFilter::LINEAR_MIPMAP_LINEAR:
+            return "linear_mipmap_linear";
+        default:
+            return "undefined";
+    }
+}
+
+auto ToString(eTextureIntFormat tex_iformat) -> std::string {
+    switch (tex_iformat) {
+        case eTextureIntFormat::RED:
+            return "i_r";
+        case eTextureIntFormat::RG:
+            return "i_rg";
+        case eTextureIntFormat::RGB:
+            return "i_rgb";
+        case eTextureIntFormat::RGBA:
+            return "i_rgba";
+        case eTextureIntFormat::DEPTH:
+            return "i_depth";
+        case eTextureIntFormat::DEPTH_STENCIL:
+            return "i_stencil";
+        default:
+            return "undefined";
+    }
+}
+
 }  // namespace renderer
