@@ -70,4 +70,26 @@ enum class RENDERER_API eBufferUsage {
 /// Returns the string representation of the given buffer usage
 RENDERER_API auto ToString(eBufferUsage usage) -> std::string;
 
+/// Available format for the type of data stored in general textures
+enum class RENDERER_API eTextureFormat {
+    RGB,
+    RGBA,
+    BGRA,
+    DEPTH,
+    STENCIL,
+};
+
+/// Returns the string representation of the given texture format
+RENDERER_API auto ToString(eTextureFormat format) -> std::string;
+
+/// Available storage options for a buffer of memory (how it's represented)
+enum class RENDERER_API eStorageType {
+    UINT_8,
+    UINT_32,
+    FLOAT_32,
+};
+
+/// Returns the string representation of a given eStorageType
+RENDERER_API auto ToString(eStorageType dtype) -> std::string;
+
 }  // namespace renderer

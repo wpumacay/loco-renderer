@@ -127,4 +127,34 @@ auto ToString(eBufferUsage usage) -> std::string {
     }
 }
 
+auto ToString(eTextureFormat format) -> std::string {
+    switch (format) {
+        case eTextureFormat::RGB:
+            return "rgb";
+        case eTextureFormat::RGBA:
+            return "rgba";
+        case eTextureFormat::BGRA:
+            return "bgra";
+        case eTextureFormat::DEPTH:
+            return "depth";
+        case eTextureFormat::STENCIL:
+            return "stencil";
+        default:
+            return "undefined";
+    }
+}
+
+auto ToString(eStorageType dtype) -> std::string {
+    switch (dtype) {
+        case eStorageType::UINT_8:
+            return "uint_8";
+        case eStorageType::UINT_32:
+            return "uint_32";
+        case eStorageType::FLOAT_32:
+            return "float_32";
+        default:
+            return "undefined";
+    }
+}
+
 }  // namespace renderer

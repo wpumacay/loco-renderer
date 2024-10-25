@@ -1,33 +1,19 @@
 #include <cstring>
+#include <string>
 
 #include <glad/gl.h>
 
 #include <spdlog/fmt/bundled/format.h>
 
 #include <utils/logging.hpp>
-#include <renderer/core/texture_data_t.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
-namespace renderer {
+#include <renderer/backend/graphics/opengl/texture_data_opengl_t.hpp>
 
-auto ToString(const eTextureFormat& format) -> std::string {
-    switch (format) {
-        case eTextureFormat::RGB:
-            return "rgb";
-        case eTextureFormat::RGBA:
-            return "rgba";
-        case eTextureFormat::BGRA:
-            return "bgra";
-        case eTextureFormat::DEPTH:
-            return "depth";
-        case eTextureFormat::STENCIL:
-            return "stencil";
-        default:
-            return "undefined";
-    }
-}
+namespace renderer {
+namespace opengl {
 
 auto ToOpenGLEnum(const eTextureFormat& format) -> uint32_t {
     switch (format) {
@@ -46,19 +32,6 @@ auto ToOpenGLEnum(const eTextureFormat& format) -> uint32_t {
     }
 }
 
-auto ToString(const eStorageType& dtype) -> std::string {
-    switch (dtype) {
-        case eStorageType::UINT_8:
-            return "uint_8";
-        case eStorageType::UINT_32:
-            return "uint_32";
-        case eStorageType::FLOAT_32:
-            return "float_32";
-        default:
-            return "undefined";
-    }
-}
-
 auto ToOpenGLEnum(const eStorageType& dtype) -> uint32_t {
     switch (dtype) {
         case eStorageType::UINT_8:
@@ -72,7 +45,8 @@ auto ToOpenGLEnum(const eStorageType& dtype) -> uint32_t {
     }
 }
 
-TextureData::TextureData(const char* image_path) : m_ImagePath(image_path) {
+OpenGLTextureData::OpenGLTextureData(const char* image_path)
+    : m_ImagePath(image_path) {
     if (m_ImagePath.find(".jpg") != std::string::npos ||
         m_ImagePath.find(".jpeg") != std::string::npos ||
         m_ImagePath.find(".JPG") != std::string::npos ||
@@ -85,15 +59,15 @@ TextureData::TextureData(const char* image_path) : m_ImagePath(image_path) {
         m_Storage = eStorageType::UINT_8;
     } else {
         m_Format = eTextureFormat::RGB;
-        LOG_CORE_ERROR("TextureData >>> image-format not supported yet");
+        LOG_CORE_ERROR("OpenGLTextureData >>> image-format not supported yet");
     }
 
     m_Data.reset(
         stbi_load(m_ImagePath.c_str(), &m_Width, &m_Height, &m_Channels, 0));
 }
 
-TextureData::TextureData(int32_t width, int32_t height, int32_t channels,
-                         const uint8_t* data)
+OpenGLTextureData::OpenGLTextureData(int32_t width, int32_t height,
+                                     int32_t channels, const uint8_t* data)
     : m_Width(width), m_Height(height), m_Channels(channels) {
     if (channels == 3) {
         m_Format = eTextureFormat::RGB;
@@ -107,9 +81,9 @@ TextureData::TextureData(int32_t width, int32_t height, int32_t channels,
     memcpy(m_Data.get(), data, buffer_size);
 }
 
-auto TextureData::ToString() const -> std::string {
+auto OpenGLTextureData::ToString() const -> std::string {
     return fmt::format(
-        "<TextureData\n"
+        "<OpenGLTextureData\n"
         "  width: {0}\n"
         "  height: {1}\n"
         "  channels: {2}\n"
@@ -120,5 +94,7 @@ auto TextureData::ToString() const -> std::string {
         m_Width, m_Height, m_Channels, ::renderer::ToString(m_Format),
         ::renderer::ToString(m_Storage), m_ImagePath);
 }
+
+}  // namespace opengl
 
 }  // namespace renderer
