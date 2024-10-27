@@ -15,7 +15,7 @@ RENDERER_API auto ToOpenGLEnum(eTextureFormat format) -> uint32_t;
 RENDERER_API auto ToOpenGLEnum(eStorageType dtype) -> uint32_t;
 
 /// Texture Data object (represents generally a texture's image data)
-class OpenGLTextureData {
+class RENDERER_API OpenGLTextureData {
     // cppcheck-suppress unknownMacro
     DEFINE_SMART_POINTERS(OpenGLTextureData)
 

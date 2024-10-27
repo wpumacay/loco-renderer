@@ -85,15 +85,16 @@ loco_create_target(RendererCpp SHARED
     FALSE)
 
 if (RENDERER_BUILD_IMGUI)
+  set(RENDERER_IMGUI_DIR ${PROJECT_SOURCE_DIR}/third_party/imgui)
   target_sources(RendererCpp PRIVATE
-    ${imgui_SOURCE_DIR}/imgui.cpp
-    ${imgui_SOURCE_DIR}/imgui_demo.cpp
-    ${imgui_SOURCE_DIR}/imgui_draw.cpp
-    ${imgui_SOURCE_DIR}/imgui_tables.cpp
-    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
-  target_include_directories(RendererCpp PUBLIC ${imgui_SOURCE_DIR})
+    ${RENDERER_IMGUI_DIR}/imgui.cpp
+    ${RENDERER_IMGUI_DIR}/imgui_demo.cpp
+    ${RENDERER_IMGUI_DIR}/imgui_draw.cpp
+    ${RENDERER_IMGUI_DIR}/imgui_tables.cpp
+    ${RENDERER_IMGUI_DIR}/imgui_widgets.cpp
+    ${RENDERER_IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${RENDERER_IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
+  target_include_directories(RendererCpp PUBLIC ${RENDERER_IMGUI_DIR})
   target_compile_definitions(RendererCpp PUBLIC -DRENDERER_IMGUI)
 endif()
 # cmake-format: on

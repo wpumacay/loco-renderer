@@ -1,20 +1,16 @@
-
-#include <iostream>
-
 #include <glad/gl.h>
 
-#include <renderer/window/window_t.hpp>
-#include <renderer/shader/program_t.hpp>
-#include <renderer/core/vertex_buffer_t.hpp>
-#include <renderer/core/vertex_array_t.hpp>
-#include <renderer/core/texture_t.hpp>
+#include <utils/logging.hpp>
+
+#include <renderer/engine/graphics/window_t.hpp>
+#include <renderer/backend/graphics/opengl/program_opengl_t.hpp>
+#include <renderer/backend/graphics/opengl/vertex_buffer_opengl_t.hpp>
+#include <renderer/backend/graphics/opengl/vertex_array_opengl_t.hpp>
+#include <renderer/backend/graphics/opengl/texture_opengl_t.hpp>
 
 #if defined(RENDERER_IMGUI)
 #include <imgui.h>
 #endif  // RENDERER_IMGUI
-
-constexpr int WINDOW_WIDTH = 1024;
-constexpr int WINDOW_HEIGHT = 768;
 
 constexpr const char* VERT_SHADER_SRC = R"(
     #version 330 core
@@ -50,19 +46,35 @@ auto get_wrapping_mode_from_idx(uint32_t idx) -> renderer::eTextureWrap;
 // NOLINTNEXTLINE
 auto main() -> int {
     // NOLINTNEXTLINE
-    auto IMAGE_PATH = renderer::RESOURCES_PATH + "images/container.jpg";
+    auto IMAGE_PATH = ::renderer::RESOURCES_PATH + "images/container.jpg";
 
-    auto window =
-        std::make_unique<renderer::Window>(WINDOW_WIDTH, WINDOW_HEIGHT);
+    constexpr int WINDOW_WIDTH = 1024;
+    constexpr int WINDOW_HEIGHT = 768;
+    constexpr auto WINDOW_API = ::renderer::eWindowBackend::TYPE_GLFW;
 
+    renderer::WindowConfig win_config;
+    win_config.backend = WINDOW_API;
+    win_config.width = WINDOW_WIDTH;
+    win_config.height = WINDOW_HEIGHT;
+    win_config.title = "Example 05 - OpenGL Textures";
+    win_config.gl_version_major = 3;
+    win_config.gl_version_minor = 3;
+
+    auto window = ::renderer::Window::CreateWindow(win_config);
     window->RegisterKeyboardCallback([&](int key, int, int) {
-        if (key == renderer::keys::KEY_ESCAPE) {
+        if (key == ::renderer::keys::KEY_ESCAPE) {
             window->RequestClose();
         }
     });
 
-    auto program = std::make_unique<renderer::Program>(
-        "basic_2d", VERT_SHADER_SRC, FRAG_SHADER_SRC);
+    auto program = std::make_shared<::renderer::opengl::OpenGLProgram>(
+        VERT_SHADER_SRC, FRAG_SHADER_SRC);
+    program->Build();
+
+    if (!program->IsValid()) {
+        LOG_CORE_ERROR("There was an error building the shader program");
+        return 1;
+    }
 
     // clang-format off
     // NOLINTNEXTLINE
@@ -73,7 +85,7 @@ auto main() -> int {
          0.5F,  0.5F, 2.0F, 2.0F, // NOLINT
         -0.5F,  0.5F, 0.0F, 2.0F // NOLINT
     };
-    constexpr uint32_t NUM_VERTICES = 6;
+    constexpr uint32_t NUM_INDICES = 6;
 
     // NOLINTNEXTLINE
     uint32_t buffer_indices[] = {
@@ -82,22 +94,23 @@ auto main() -> int {
     };
     // clang-format on
 
-    renderer::BufferLayout layout = {
+    ::renderer::opengl::OpenGLBufferLayout layout = {
         {"position", renderer::eElementType::FLOAT_2, false},
         {"texcoord", renderer::eElementType::FLOAT_2, false}};
 
-    auto vbo = std::make_shared<renderer::VertexBuffer>(
+    auto vbo = std::make_shared<renderer::opengl::OpenGLVertexBuffer>(
         layout, renderer::eBufferUsage::STATIC,
         static_cast<uint32_t>(sizeof(buffer_data)), buffer_data);
 
-    auto ibo = std::make_shared<renderer::IndexBuffer>(
-        renderer::eBufferUsage::STATIC, NUM_VERTICES, buffer_indices);
+    auto ibo = std::make_shared<renderer::opengl::OpenGLIndexBuffer>(
+        renderer::eBufferUsage::STATIC, NUM_INDICES, buffer_indices);
 
-    auto vao = std::make_shared<renderer::VertexArray>();
+    auto vao = std::make_shared<renderer::opengl::OpenGLVertexArray>();
     vao->AddVertexBuffer(vbo);
     vao->SetIndexBuffer(ibo);
 
-    auto texture = std::make_shared<renderer::Texture>(IMAGE_PATH.c_str());
+    auto texture =
+        std::make_shared<renderer::opengl::OpenGLTexture>(IMAGE_PATH.c_str());
 
     while (window->active()) {
         window->Begin();
@@ -108,8 +121,7 @@ auto main() -> int {
             texture->Bind();
             vao->Bind();
 
-            glDrawElements(GL_TRIANGLES, NUM_VERTICES, GL_UNSIGNED_INT,
-                           nullptr);
+            glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_INT, nullptr);
 
             vao->Unbind();
             texture->Unbind();
@@ -117,7 +129,6 @@ auto main() -> int {
         }
 
 #if defined(RENDERER_IMGUI)
-        ImGui::ShowDemoWindow();
         ImGui::Begin("Options");
         {
             // Options for wrap-u

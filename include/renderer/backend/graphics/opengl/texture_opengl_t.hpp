@@ -11,15 +11,15 @@ namespace renderer {
 namespace opengl {
 
 /// Returns the associated OpenGL enum for the given texture wrapping mode
-auto ToOpenGLEnum(eTextureWrap tex_wrap) -> int32_t;
+RENDERER_API auto ToOpenGLEnum(eTextureWrap tex_wrap) -> int32_t;
 
 /// Returns the associated OpenGL enum for this given texture filter options
-auto ToOpenGLEnum(eTextureFilter tex_filter) -> int32_t;
+RENDERER_API auto ToOpenGLEnum(eTextureFilter tex_filter) -> int32_t;
 
 /// Returns the associated OpenGL enum of the given internal format type
-auto ToOpenGLEnum(eTextureIntFormat tex_iformat) -> int32_t;
+RENDERER_API auto ToOpenGLEnum(eTextureIntFormat tex_iformat) -> int32_t;
 
-class OpenGLTexture {
+class RENDERER_API OpenGLTexture {
     // cppcheck-suppress unknownMacro
     DEFINE_SMART_POINTERS(OpenGLTexture)
 

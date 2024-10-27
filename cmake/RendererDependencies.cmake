@@ -27,10 +27,9 @@ set(RENDERER_DEP_VERSION_glfw
     CACHE STRING
           "Version of GLFW to be fetched (used to create an xplatf. window) ")
 
-set(RENDERER_DEP_VERSION_imgui
-    c6e0284ac58b3f205c95365478888f7b53b077e2 # Release 1.89.9
-    CACHE STRING
-          "Version of Dear-ImGui to be fetched (used for prototyping UI)")
+# set(RENDERER_DEP_VERSION_imgui c6e0284ac58b3f205c95365478888f7b53b077e2 #
+# Release 1.89.9 CACHE STRING "Version of Dear-ImGui to be fetched (used for
+# prototyping UI)")
 
 set(RENDERER_DEP_VERSION_utils
     a1cd8242e5dbfa385719a89a6502649aa2cd1633 # Version v0.2.10
@@ -46,7 +45,7 @@ set(RENDERER_DEP_VERSION_pybind11
 
 mark_as_advanced(RENDERER_DEP_VERSION_catch2)
 mark_as_advanced(RENDERER_DEP_VERSION_glfw)
-mark_as_advanced(RENDERER_DEP_VERSION_imgui)
+# mark_as_advanced(RENDERER_DEP_VERSION_imgui)
 mark_as_advanced(RENDERER_DEP_VERSION_utils)
 mark_as_advanced(RENDERER_DEP_VERSION_math)
 mark_as_advanced(RENDERER_DEP_VERSION_pybind11)
@@ -134,26 +133,26 @@ add_library(glfw::glfw ALIAS glfw)
 # ImGui is used for fast prototyping Graphical User Interfaces in Immediate mode
 # ------------------------------------------------------------------------------
 
-FetchContent_Declare(
-  imgui
-  GIT_REPOSITORY https://github.com/ocornut/imgui.git
-  GIT_TAG ${RENDERER_DEP_VERSION_imgui}
-  GIT_PROGRESS FALSE
-  GIT_SHALLOW FALSE
-  USES_TERMINAL_DOWNLOAD TRUE
-  PATCH_COMMAND
-    "${GIT_EXECUTABLE}"
-    "apply"
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/imgui-gcc-warns.patch"
-    "||"
-    "${CMAKE_COMMAND}"
-    "-E"
-    "true")
-FetchContent_GetProperties(imgui)
-
-if (NOT imgui_POPULATED)
-  FetchContent_Populate(imgui)
-endif()
+#### FetchContent_Declare(
+####   imgui
+####   GIT_REPOSITORY https://github.com/ocornut/imgui.git
+####   GIT_TAG ${RENDERER_DEP_VERSION_imgui}
+####   GIT_PROGRESS FALSE
+####   GIT_SHALLOW FALSE
+####   USES_TERMINAL_DOWNLOAD TRUE
+####   PATCH_COMMAND
+####     "${GIT_EXECUTABLE}"
+####     "apply"
+####     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/imgui-gcc-warns.patch"
+####     "||"
+####     "${CMAKE_COMMAND}"
+####     "-E"
+####     "true")
+#### FetchContent_GetProperties(imgui)
+####
+#### if (NOT imgui_POPULATED)
+####   FetchContent_Populate(imgui)
+#### endif()
 
 # ------------------------------------------------------------------------------
 # Math3d is used as math library (defines vectors, matrices, and operations
