@@ -17,6 +17,8 @@ from renderer_bindings import (  # type: ignore
     TextureWrap,
     TextureFilter,
     TextureIntFormat,
+    ObjectType,
+    Object3D,
 )
 
 __all__ = [
@@ -36,5 +38,7 @@ __all__ = [
     "TextureWrap",
     "TextureFilter",
     "TextureIntFormat",
+    "ObjectType",
+    "Object3D",
 ]
 # fmt: on

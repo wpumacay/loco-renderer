@@ -20,7 +20,7 @@ enum class RENDERER_API eObjectType : uint8_t {
 RENDERER_API auto ToString(eObjectType type) -> std::string;
 
 /// Base interface for all objects supported by the engine
-class RENDERER_API Object3D {
+class RENDERER_API Object3D : public std::enable_shared_from_this<Object3D> {
     DEFAULT_COPY_AND_MOVE_AND_ASSIGN(Object3D)
 
     DEFINE_SMART_POINTERS(Object3D)
@@ -39,6 +39,9 @@ class RENDERER_API Object3D {
 
     /// Deallocates the resources used by this object
     virtual ~Object3D() = default;
+
+    /// Adds the given object as child of this object
+    auto AddChild(Object3D::ptr child_obj) -> void;
 
     /// Returns the type of this object
     RENDERER_NODISCARD auto type() const -> eObjectType { return m_Type; }
