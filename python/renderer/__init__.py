@@ -12,6 +12,11 @@ from renderer_bindings import (  # type: ignore
     Window,
     ElementType,
     BufferUsage,
+    TextureFormat,
+    StorageType,
+    TextureWrap,
+    TextureFilter,
+    TextureIntFormat,
 )
 
 __all__ = [
@@ -26,5 +31,10 @@ __all__ = [
     "Window",
     "ElementType",
     "BufferUsage",
+    "TextureFormat",
+    "StorageType",
+    "TextureWrap",
+    "TextureFilter",
+    "TextureIntFormat",
 ]
 # fmt: on

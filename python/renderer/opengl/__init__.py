@@ -7,6 +7,8 @@ from renderer_bindings.opengl import (  # type: ignore
     OpenGLVertexBuffer,
     OpenGLVertexArray,
     OpenGLIndexBuffer,
+    OpenGLTextureData,
+    OpenGLTexture,
 )
 
 __all__ = [
@@ -16,5 +18,7 @@ __all__ = [
     "OpenGLVertexBuffer",
     "OpenGLVertexArray",
     "OpenGLIndexBuffer",
+    "OpenGLTextureData",
+    "OpenGLTexture",
 ]
 # fmt: on

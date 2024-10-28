@@ -15,6 +15,7 @@ extern auto bindings_buttons(py::module m) -> void;
 namespace opengl {
 extern auto bindings_program(py::module m) -> void;
 extern auto bindings_buffers(py::module m) -> void;
+extern auto bindings_texture(py::module m) -> void;
 }  // namespace opengl
 
 }  // namespace renderer
@@ -38,4 +39,5 @@ PYBIND11_MODULE(renderer_bindings, m) {
     auto m_opengl = m.def_submodule("opengl");
     ::renderer::opengl::bindings_program(m_opengl);
     ::renderer::opengl::bindings_buffers(m_opengl);
+    ::renderer::opengl::bindings_texture(m_opengl);
 }
