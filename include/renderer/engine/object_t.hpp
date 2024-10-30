@@ -11,9 +11,10 @@ namespace renderer {
 /// All valid object types in the engine
 enum class RENDERER_API eObjectType : uint8_t {
     BASE = 0,
-    MESH = 1,
-    CAMERA = 2,
-    LIGHT = 3,
+    SCENE = 1,
+    MESH = 2,
+    CAMERA = 3,
+    LIGHT = 4,
 };
 
 /// Returns a string representation of the given object type enum
@@ -27,27 +28,32 @@ class RENDERER_API Object3D : public std::enable_shared_from_this<Object3D> {
 
  public:
     /// Creates a default Object3D
-    Object3D() = default;
+    explicit Object3D(const char* name);
 
     /// Creates an object with given pose in world space
+    /// \param[in] name The name of this object
     /// \param[in] init_pose The pose of this object in world space
-    explicit Object3D(Pose init_pose);
+    explicit Object3D(const char* name, Pose init_pose);
 
     /// Creates an object with given position and orientation in world space
+    /// \param[in] name The name of this object
     /// \param[in] init_pos The position of this object in world space
-    explicit Object3D(Vec3 init_pos);
+    explicit Object3D(const char* name, Vec3 init_pos);
 
     /// Deallocates the resources used by this object
     virtual ~Object3D() = default;
 
     /// Adds the given object as child of this object
-    auto AddChild(Object3D::ptr child_obj) -> void;
+    virtual auto AddChild(Object3D::ptr child_obj) -> void;
 
     /// Returns the type of this object
     RENDERER_NODISCARD auto type() const -> eObjectType { return m_Type; }
 
+    /// Returns a copy of the name of the object
+    RENDERER_NODISCARD auto name() const -> std::string { return m_Name; }
+
     /// Returns a string representation of this object
-    RENDERER_NODISCARD auto ToString() const -> std::string;
+    RENDERER_NODISCARD virtual auto ToString() const -> std::string;
 
  public:
     /// The 3d pose of this object respect to world space. If object has a
@@ -63,6 +69,9 @@ class RENDERER_API Object3D : public std::enable_shared_from_this<Object3D> {
  protected:
     /// The type of this object
     eObjectType m_Type{eObjectType::BASE};
+
+    /// A unique identifier of this object
+    std::string m_Name{};
 };
 
 }  // namespace renderer
