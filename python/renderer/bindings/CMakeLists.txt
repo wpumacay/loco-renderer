@@ -15,6 +15,7 @@ set(BINDINGS_SOURCES
     # ${CMAKE_CURRENT_SOURCE_DIR}/managers_py.cpp
     # ${CMAKE_CURRENT_SOURCE_DIR}/camera_py.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/object_py.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scene_py.cpp
 )
 # cmake-format: on
 

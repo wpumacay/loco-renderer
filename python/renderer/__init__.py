@@ -19,6 +19,7 @@ from renderer_bindings import (  # type: ignore
     TextureIntFormat,
     ObjectType,
     Object3D,
+    Scene,
 )
 
 __all__ = [
@@ -40,5 +41,6 @@ __all__ = [
     "TextureIntFormat",
     "ObjectType",
     "Object3D",
+    "Scene",
 ]
 # fmt: on

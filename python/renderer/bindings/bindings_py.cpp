@@ -19,6 +19,7 @@ extern auto bindings_texture(py::module m) -> void;
 }  // namespace opengl
 
 extern auto bindings_object3d(py::module m) -> void;
+extern auto bindings_scene(py::module m) -> void;
 
 }  // namespace renderer
 
@@ -44,4 +45,5 @@ PYBIND11_MODULE(renderer_bindings, m) {
     ::renderer::opengl::bindings_texture(m_opengl);
 
     ::renderer::bindings_object3d(m);
+    ::renderer::bindings_scene(m);
 }
