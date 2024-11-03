@@ -1,52 +1,51 @@
 #include <chrono>
+#include <filesystem>
+#include <memory>
+#include <string>
 
 #include <glad/gl.h>
 
-#include <renderer/window/window_t.hpp>
-#include <renderer/assets/shader_manager_t.hpp>
-#include <renderer/assets/texture_manager_t.hpp>
-#include <renderer/input/input_manager_t.hpp>
-#include <renderer/core/vertex_buffer_layout_t.hpp>
-#include <renderer/core/vertex_buffer_t.hpp>
-#include <renderer/core/index_buffer_t.hpp>
-#include <renderer/core/vertex_array_t.hpp>
+#include <renderer/engine/graphics/window_t.hpp>
+#include <renderer/backend/graphics/opengl/resources_manager_t.hpp>
+#include <renderer/engine/input_manager_t.hpp>
+#include <renderer/backend/graphics/opengl/vertex_buffer_opengl_t.hpp>
+#include <renderer/backend/graphics/opengl/index_buffer_opengl_t.hpp>
+#include <renderer/backend/graphics/opengl/vertex_array_opengl_t.hpp>
 
 #include <utils/logging.hpp>
-#include "renderer/input/buttons.hpp"
 
 #if defined(RENDERER_IMGUI)
 #include <imgui.h>
 #endif  // RENDERER_IMGUI
 
-constexpr int WINDOW_WIDTH = 1024;
-constexpr int WINDOW_HEIGHT = 768;
-
-namespace renderer {
-
 struct Engine {
-    Window::uptr window = nullptr;
-    ShaderManager::uptr shader_manager = nullptr;
-    TextureManager::uptr texture_manager = nullptr;
-    InputManager::uptr input_manager = nullptr;
-    std::chrono::steady_clock::time_point stamp_now;
-    std::chrono::steady_clock::time_point stamp_bef;
+    ::renderer::Window::ptr window{nullptr};
+    ::renderer::opengl::ResourcesManager::ptr resources_manager{nullptr};
+    ::renderer::InputManager::ptr input_manager{nullptr};
+    std::chrono::steady_clock::time_point stamp_now{};
+    std::chrono::steady_clock::time_point stamp_bef{};
     double time = 0.0;
     double delta = 0.0;
 };
 
-}  // namespace renderer
-
 // NOLINTNEXTLINE
-renderer::Engine g_engine;
+Engine g_engine;
 
 auto main() -> int {
-    g_engine.window =
-        std::make_unique<renderer::Window>(WINDOW_WIDTH, WINDOW_HEIGHT);
-    g_engine.shader_manager = std::make_unique<renderer::ShaderManager>();
-    g_engine.texture_manager = std::make_unique<renderer::TextureManager>();
-    g_engine.input_manager = std::make_unique<renderer::InputManager>();
+    ::renderer::WindowConfig win_config;
+    win_config.backend = ::renderer::eWindowBackend::TYPE_GLFW;
+    win_config.width = 1024;
+    win_config.height = 768;
+    win_config.title = "Example 06 - Managers";
+    win_config.gl_version_major = 3;
+    win_config.gl_version_minor = 3;
+
+    g_engine.window = ::renderer::Window::CreateWindow(win_config);
     g_engine.window->RegisterKeyboardCallback([&](int key, int action, int) {
         g_engine.input_manager->CallbackKey(key, action);
+        if (key == ::renderer::keys::KEY_ESCAPE) {
+            g_engine.window->RequestClose();
+        }
     });
     g_engine.window->RegisterMouseButtonCallback(
         [&](int button, int action, double x, double y) {
@@ -62,14 +61,29 @@ auto main() -> int {
                                                static_cast<float>(yOff));
     });
 
-    auto program = g_engine.shader_manager->LoadProgram(
-        "basic2d",
-        renderer::EXAMPLES_PATH + "/resources/shaders/basic2d_vert.glsl",
-        renderer::EXAMPLES_PATH + "/resources/shaders/basic2d_frag.glsl");
+    g_engine.resources_manager =
+        std::make_shared<::renderer::opengl::ResourcesManager>();
+    g_engine.input_manager = std::make_shared<::renderer::InputManager>();
 
-    auto texture = g_engine.texture_manager->LoadTexture(
-        "container",
-        renderer::EXAMPLES_PATH + "/resources/images/container.jpg");
+    const auto SHADERS_FOLDER =
+        std::filesystem::path(__FILE__).parent_path().parent_path() /
+        "resources" / "shaders";
+    const auto VERT_SHADER_FILE = SHADERS_FOLDER / "basic2d_vert.glsl";
+    const auto FRAG_SHADER_FILE = SHADERS_FOLDER / "basic2d_frag.glsl";
+    auto program = g_engine.resources_manager->LoadProgram(
+        "basic2d", VERT_SHADER_FILE.string(), FRAG_SHADER_FILE.string());
+    program->Build();
+    if (!program->IsValid()) {
+        LOG_CORE_ERROR("There was an error building the shader program");
+        return 1;
+    }
+
+    const auto IMAGES_FOLDER =
+        std::filesystem::path(__FILE__).parent_path().parent_path() /
+        "resources" / "images";
+    const auto TEXTURE_FILE = IMAGES_FOLDER / "container.jpg";
+    auto texture = g_engine.resources_manager->LoadTexture(
+        "container", TEXTURE_FILE.string());
 
     // -------------------------------------------------------------------------
     // Setup the primitive to be drawn
@@ -77,44 +91,36 @@ auto main() -> int {
     // clang-format off
     // NOLINTNEXTLINE
     float buffer_data[] = {
-    /*|      pos       texture  */
+        /*|   pos   |  texture  |*/
         -0.5F, -0.5F, 0.0F, 0.0F, // NOLINT
          0.5F, -0.5F, 2.0F, 0.0F, // NOLINT
          0.5F,  0.5F, 2.0F, 2.0F, // NOLINT
         -0.5F,  0.5F, 0.0F, 2.0F // NOLINT
     };
-    constexpr uint32_t NUM_VERTICES = 6;
 
     // NOLINTNEXTLINE
     uint32_t buffer_indices[] = {
         0, 1, 2,  // first triangle
         0, 2, 3  // second triangle
     };
+
+    constexpr uint32_t NUM_VERTICES = 6;
     // clang-format on
 
-    renderer::BufferLayout layout = {
-        {"position", renderer::eElementType::FLOAT_2, false},
-        {"texcoord", renderer::eElementType::FLOAT_2, false}};
+    ::renderer::opengl::OpenGLBufferLayout layout = {
+        {"position", ::renderer::eElementType::FLOAT_2, false},
+        {"texcoord", ::renderer::eElementType::FLOAT_2, false}};
 
-    auto vbo = std::make_shared<renderer::VertexBuffer>(
+    auto vbo = std::make_shared<::renderer::opengl::OpenGLVertexBuffer>(
         layout, renderer::eBufferUsage::STATIC,
         static_cast<uint32_t>(sizeof(buffer_data)), buffer_data);
-
-    auto ibo = std::make_shared<renderer::IndexBuffer>(
+    auto ibo = std::make_shared<::renderer::opengl::OpenGLIndexBuffer>(
         renderer::eBufferUsage::STATIC, NUM_VERTICES, buffer_indices);
 
-    auto vao = std::make_shared<renderer::VertexArray>();
+    auto vao = std::make_shared<::renderer::opengl::OpenGLVertexArray>();
     vao->AddVertexBuffer(vbo);
     vao->SetIndexBuffer(ibo);
     // -------------------------------------------------------------------------
-
-    program->Bind();
-    Vec3 color = {0.2F, 0.4F, 0.8F};  // NOLINT
-    float radius = 0.1F;              // NOLINT
-    program->SetFloat("u_time", 0.0F);
-    program->SetFloat("u_radius", radius);
-    program->SetVec3("u_color", color);
-    program->Unbind();
 
     g_engine.stamp_bef = std::chrono::steady_clock::now();
     g_engine.stamp_now = std::chrono::steady_clock::now();
@@ -122,7 +128,7 @@ auto main() -> int {
     while (g_engine.window->active()) {
         g_engine.window->Begin();
 
-        if (g_engine.input_manager->IsKeyDown(renderer::keys::KEY_ESCAPE)) {
+        if (g_engine.input_manager->IsKeyDown(::renderer::keys::KEY_ESCAPE)) {
             g_engine.window->RequestClose();
         }
 
@@ -136,16 +142,11 @@ auto main() -> int {
         LOG_INFO("MouseButtonRight: {0}", g_engine.input_manager->IsMouseDown(
                                               renderer::mouse::BUTTON_RIGHT));
 
-        // Draw the quad
+        // Draw the cube
         {
             program->Bind();
             texture->Bind();
             vao->Bind();
-
-            // Update our uniforms
-            program->SetFloat("u_time", static_cast<float>(g_engine.time));
-            program->SetFloat("u_radius", radius);
-            program->SetVec3("u_color", color);
 
             glDrawElements(GL_TRIANGLES, NUM_VERTICES, GL_UNSIGNED_INT,
                            nullptr);
@@ -160,8 +161,6 @@ auto main() -> int {
             // NOLINTNEXTLINE
             ImGui::Text("time: %.5f, delta: %.5f", g_engine.time,
                         g_engine.delta);
-            ImGui::SliderFloat("radius", &radius, -0.2F, 0.2F);  // NOLINT
-            ImGui::ColorEdit3("color", color.data());
         }
 #endif  // RENDERER_IMGUI
 
