@@ -1,59 +1,51 @@
 #!/usr/bin/env python
 
-import os
+from pathlib import Path
 from typing import Optional
 
 import numpy as np
-from OpenGL import GL
+from OpenGL.GL import *  # type: ignore
 
 import renderer as rdr
-
-WINDOW_WIDTH = 1024
-WINDOW_HEIGHT = 768
-
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SHADERS_DIR = os.path.join(CURRENT_DIR, "..", "resources", "shaders")
-IMAGES_DIR = os.path.join(CURRENT_DIR, "..", "resources", "images")
+from renderer.opengl import (
+    OpenGLBufferElement,
+    OpenGLBufferLayout,
+    OpenGLProgram,
+    OpenGLVertexArray,
+    OpenGLVertexBuffer,
+    OpenGLIndexBuffer,
+    ResourcesManager,
+)
 
 
 class Engine:
     def __init__(self):
         self.window: Optional[rdr.Window] = None
+        self.resources_manager: Optional[ResourcesManager] = None
         self.input_manager: Optional[rdr.InputManager] = None
-        self.shader_manager: Optional[rdr.ShaderManager] = None
-        self.texture_manager: Optional[rdr.TextureManager] = None
 
 
 g_engine = Engine()
 
 
 def main() -> int:
-    g_engine.window = rdr.Window(
-        WINDOW_WIDTH, WINDOW_HEIGHT, rdr.WindowBackend.TYPE_GLFW
-    )
-    g_engine.input_manager = rdr.InputManager()
-    g_engine.shader_manager = rdr.ShaderManager()
-    g_engine.texture_manager = rdr.TextureManager()
+    global g_engine
+    win_config = rdr.WindowConfig()
+    win_config.backend = rdr.WindowBackend.TYPE_GLFW
+    win_config.width = 1024
+    win_config.height = 768
+    win_config.title = "Example 06 - Managers"
+    win_config.gl_version_major = 3
+    win_config.gl_version_minor = 3
 
-    if g_engine.window is None:
-        print("There was an error initializing the window")
-        return 1
-
-    if g_engine.input_manager is None:
-        print("There was an error initializing the input manager")
-        return 1
-
-    if g_engine.shader_manager is None:
-        print("There was an error initializing the shader manager")
-        return 1
-
-    if g_engine.texture_manager is None:
-        print("There was an error initializing the texture manager")
-        return 1
+    g_engine.window = rdr.Window.CreateWindow(win_config)
+    assert g_engine.window is not None
 
     def keyboard_callback(key: int, action: int, _: int) -> None:
         if g_engine.input_manager is not None:
             g_engine.input_manager.CallbackKey(key, action)
+
+    g_engine.window.RegisterKeyboardCallback(keyboard_callback)
 
     def mouse_button_callback(
         button: int, action: int, x: float, y: float
@@ -61,27 +53,44 @@ def main() -> int:
         if g_engine.input_manager is not None:
             g_engine.input_manager.CallbackMouseButton(button, action, x, y)
 
+    g_engine.window.RegisterMouseButtonCallback(mouse_button_callback)
+
     def mouse_move_callback(x: float, y: float) -> None:
         if g_engine.input_manager is not None:
             g_engine.input_manager.CallbackMouseMove(x, y)
+
+    g_engine.window.RegisterMouseMoveCallback(mouse_move_callback)
 
     def scroll_callback(xOff: float, yOff: float) -> None:
         if g_engine.input_manager is not None:
             g_engine.input_manager.CallbackScroll(xOff, yOff)
 
-    g_engine.window.RegisterKeyboardCallback(keyboard_callback)
-    g_engine.window.RegisterMouseButtonCallback(mouse_button_callback)
-    g_engine.window.RegisterMouseMoveCallback(mouse_move_callback)
     g_engine.window.RegisterScrollCallback(scroll_callback)
 
-    program = g_engine.shader_manager.LoadProgram(
-        "basic2d",
-        os.path.join(SHADERS_DIR, "basic2d_vert.glsl"),
-        os.path.join(SHADERS_DIR, "basic2d_frag.glsl"),
-    )
+    g_engine.resources_manager = ResourcesManager()
+    g_engine.input_manager = rdr.InputManager()
 
-    texture = g_engine.texture_manager.LoadTexture(
-        "container", os.path.join(IMAGES_DIR, "container.jpg")
+    assert g_engine.resources_manager is not None
+    assert g_engine.input_manager is not None
+
+    SHADERS_FOLDER = Path(__file__).parent.parent / "resources" / "shaders"
+    VERT_SHADER_FILE = SHADERS_FOLDER / "basic2d_vert.glsl"
+    FRAG_SHADER_FILE = SHADERS_FOLDER / "basic2d_frag.glsl"
+
+    program = g_engine.resources_manager.LoadProgram(
+        "basic2d",
+        str(VERT_SHADER_FILE.resolve()),
+        str(FRAG_SHADER_FILE.resolve()),
+    )
+    program.Build()
+    if not program.valid:
+        print("There was an error building the shader program")
+        return 1
+
+    IMAGES_FOLDER = Path(__file__).parent.parent / "resources" / "images"
+    TEXTURE_FILE = IMAGES_FOLDER / "container.jpg"
+    texture = g_engine.resources_manager.LoadTexture(
+        "container", str(TEXTURE_FILE.resolve())
     )
 
     # fmt: off
@@ -101,32 +110,20 @@ def main() -> int:
     ], dtype=np.uint32)
     # fmt: on
 
-    layout = rdr.BufferLayout(
-        [
-            ["position", rdr.ElementType.FLOAT_2, False],
-            ["texcoord", rdr.ElementType.FLOAT_2, False],
-        ]
+    layout = OpenGLBufferLayout()
+    layout.AddElement(
+        OpenGLBufferElement("position", rdr.ElementType.FLOAT_2, False)
+    )
+    layout.AddElement(
+        OpenGLBufferElement("texcoord", rdr.ElementType.FLOAT_2, False)
     )
 
-    vbo = rdr.VertexBuffer(
-        layout,
-        rdr.BufferUsage.STATIC,
-        buffer_data,
-    )
+    vbo = OpenGLVertexBuffer(layout, rdr.BufferUsage.STATIC, buffer_data)
+    ibo = OpenGLIndexBuffer(rdr.BufferUsage.STATIC, buffer_indices)
 
-    ibo = rdr.IndexBuffer(rdr.BufferUsage.STATIC, buffer_indices)
-
-    vao = rdr.VertexArray()
+    vao = OpenGLVertexArray()
     vao.AddVertexBuffer(vbo)
     vao.SetIndexBuffer(ibo)
-
-    program.Bind()
-    color = np.array([0.2, 0.4, 0.8], dtype=np.float32)
-    radius = 0.1
-    program.SetFloat("u_time", 0.0)
-    program.SetFloat("u_radius", radius)
-    program.SetVec3("u_color", color)
-    program.Unbind()
 
     while g_engine.window.active:
         g_engine.window.Begin()
@@ -152,30 +149,20 @@ def main() -> int:
             )
         )
 
-        # print("Window: ")
-        # print(g_engine.window)
-        # print("InputManager: ")
-        # print(g_engine.input_manager)
-        # print("ShaderManager: ")
-        # print(g_engine.shader_manager)
-        # print("TextureManager: ")
-        # print(g_engine.texture_manager)
-
         program.Bind()
         texture.Bind()
         vao.Bind()
 
-        GL.glDrawElements(
-            GL.GL_TRIANGLES, NUM_VERTICES, GL.GL_UNSIGNED_INT, None
-        )
+        glDrawElements(GL_TRIANGLES, NUM_VERTICES, GL_UNSIGNED_INT, None)
 
         vao.Unbind()
         texture.Unbind()
         program.Unbind()
+
         g_engine.window.End()
 
     return 0
 
 
 if __name__ == "__main__":
-    SystemExit(main())
+    raise SystemExit(main())
