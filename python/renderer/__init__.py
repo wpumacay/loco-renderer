@@ -20,6 +20,7 @@ from renderer_bindings import (  # type: ignore
     ObjectType,
     Object3D,
     Scene,
+    InputManager,
 )
 
 __all__ = [
@@ -42,5 +43,6 @@ __all__ = [
     "ObjectType",
     "Object3D",
     "Scene",
+    "InputManager",
 ]
 # fmt: on

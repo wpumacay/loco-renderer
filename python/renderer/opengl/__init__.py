@@ -9,6 +9,7 @@ from renderer_bindings.opengl import (  # type: ignore
     OpenGLIndexBuffer,
     OpenGLTextureData,
     OpenGLTexture,
+    ResourcesManager,
 )
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     "OpenGLIndexBuffer",
     "OpenGLTextureData",
     "OpenGLTexture",
+    "ResourcesManager",
 ]
 # fmt: on
