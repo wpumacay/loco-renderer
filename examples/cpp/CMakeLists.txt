@@ -10,7 +10,7 @@ set(RENDERER_EXAMPLES_LIST
     ${CMAKE_CURRENT_SOURCE_DIR}/example_04_buffers_with_indices_opengl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/example_05_textures_opengl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/example_06_managers.cpp
-    # ${CMAKE_CURRENT_SOURCE_DIR}/example_07_camera.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/example_07_camera.cpp
     # ${CMAKE_CURRENT_SOURCE_DIR}/example_08_geometry.cpp
     # ${CMAKE_CURRENT_SOURCE_DIR}/example_09_geometry_factory.cpp
     # ${CMAKE_CURRENT_SOURCE_DIR}/example_10_light_casters.cpp
