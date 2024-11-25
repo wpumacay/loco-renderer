@@ -30,10 +30,18 @@ class RENDERER_API Window : public std::enable_shared_from_this<Window> {
 
     /// Creates a window from some options
     static auto CreateWindow(int width, int height, eWindowBackend backend)
-        -> std::shared_ptr<Window>;
+        -> std::shared_ptr<Window> {
+        auto window = std::make_shared<Window>(width, height, backend);
+        window->Initialize();
+        return window;
+    }
 
     /// Creates a window from a given set of configuration options
-    static auto CreateWindow(WindowConfig win_cfg) -> std::shared_ptr<Window>;
+    static auto CreateWindow(WindowConfig win_cfg) -> std::shared_ptr<Window> {
+        auto window = std::make_shared<Window>(win_cfg);
+        window->Initialize();
+        return window;
+    }
 
     /// Initializes the window and backend-related resources
     auto Initialize() -> void;

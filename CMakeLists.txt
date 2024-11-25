@@ -20,11 +20,11 @@ project(
   HOMEPAGE_URL "https://github.com/wpumacay/renderer"
   LANGUAGES C CXX)
 
-option(RENDERER_BUILD_IMGUI "Build with support for Ocornut's Dear ImGui" ON)
-option(RENDERER_BUILD_LOGS "Build with logs enabled" ON)
+option(RENDERER_BUILD_IMGUI "Build with support for Ocornut's Dear ImGui" OFF)
+option(RENDERER_BUILD_LOGS "Build with logs enabled" OFF)
 option(RENDERER_BUILD_PROFILING "Build with profiling tools enabled" OFF)
-option(RENDERER_BUILD_PYTHON_BINDINGS "Build Python bindings" ON)
-option(RENDERER_BUILD_EXAMPLES "Build C++ examples" ON)
+option(RENDERER_BUILD_PYTHON_BINDINGS "Build Python bindings" OFF)
+option(RENDERER_BUILD_EXAMPLES "Build C++ examples" OFF)
 option(RENDERER_BUILD_TESTS "Build C++ unit-tests" OFF)
 option(RENDERER_BUILD_DOCS "Build documentation" OFF)
 
@@ -51,17 +51,16 @@ loco_create_target(RendererCpp SHARED
   SOURCES
     ${SOURCE_DIR}/engine/graphics/window_t.cpp
     ${SOURCE_DIR}/backend/window/window_adapter_glfw.cpp
-    ${SOURCE_DIR}/backend/window/window_adapter_egl.cpp
     ${SOURCE_DIR}/engine/graphics/enums.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/program_opengl_t.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/vertex_buffer_layout_opengl_t.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/vertex_buffer_opengl_t.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/vertex_array_opengl_t.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/index_buffer_opengl_t.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/texture_data_opengl_t.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/texture_opengl_t.cpp
-    ${SOURCE_DIR}/backend/graphics/opengl/resources_manager_t.cpp
-    ${SOURCE_DIR}/engine/input_manager_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/program_opengl_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/vertex_buffer_layout_opengl_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/vertex_buffer_opengl_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/vertex_array_opengl_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/index_buffer_opengl_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/texture_data_opengl_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/texture_opengl_t.cpp
+    #${SOURCE_DIR}/backend/graphics/opengl/resources_manager_t.cpp
+    #${SOURCE_DIR}/engine/input_manager_t.cpp
     # ${SOURCE_DIR}/camera/camera_t.cpp
     # ${SOURCE_DIR}/camera/camera_controller_t.cpp
     # ${SOURCE_DIR}/camera/orbit_camera_controller_t.cpp
@@ -75,17 +74,22 @@ loco_create_target(RendererCpp SHARED
     # ${SOURCE_DIR}/engine/object_t.cpp
     # ${SOURCE_DIR}/engine/scene_t.cpp
     # ${SOURCE_DIR}/engine/application_t.cpp
-    ${SOURCE_DIR}/engine/object_t.cpp
-    ${SOURCE_DIR}/engine/scene_t.cpp
-    ${SOURCE_DIR}/engine/camera_t.cpp
+    #${SOURCE_DIR}/engine/object_t.cpp
+    #${SOURCE_DIR}/engine/scene_t.cpp
+    #${SOURCE_DIR}/engine/camera_t.cpp
   INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   TARGET_DEPENDENCIES
-    OpenGL::OpenGL glfw::glfw math::math utils::utils stb glad
+    ${OPENGL_LIBRARIES} glfw::glfw math::math utils::utils stb glad
   CXX_STANDARD
     ${RENDERER_BUILD_CXX_STANDARD}
   WARNINGS_AS_ERRORS
     FALSE)
+
+if (OpenGL_EGL_FOUND)
+  target_sources(RendererCpp
+      PRIVATE ${SOURCE_DIR}/backend/window/window_adapter_egl.cpp)
+endif()
 
 if (RENDERER_BUILD_IMGUI)
   set(RENDERER_IMGUI_DIR ${PROJECT_SOURCE_DIR}/third_party/imgui)

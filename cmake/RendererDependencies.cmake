@@ -32,7 +32,7 @@ set(RENDERER_DEP_VERSION_glfw
 # prototyping UI)")
 
 set(RENDERER_DEP_VERSION_utils
-    a1cd8242e5dbfa385719a89a6502649aa2cd1633 # Version v0.2.10
+    a84f6afa35d71eb5e5b97f16476e013386e3d244 # Version v0.2.12
     CACHE STRING "Version of internal utilities repo to be fetched")
 
 set(RENDERER_DEP_VERSION_math
