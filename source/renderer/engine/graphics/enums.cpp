@@ -210,4 +210,57 @@ auto ToString(eTextureIntFormat tex_iformat) -> std::string {
     }
 }
 
+auto ToString(eObjectType type) -> std::string {
+    switch (type) {
+        case eObjectType::BASE:
+            return "Base";
+        case eObjectType::SCENE:
+            return "Scene";
+        case eObjectType::MESH:
+            return "Mesh";
+        case eObjectType::CAMERA:
+            return "Camera";
+        case eObjectType::LIGHT:
+            return "Light";
+        default:
+            return "Base";
+    }
+}
+
+auto ToString(eCameraController controller_type) -> std::string {
+    switch (controller_type) {
+        case eCameraController::NONE:
+            return "none";
+        case eCameraController::ORBIT:
+            return "orbit";
+        case eCameraController::FPS:
+            return "fps";
+    }
+    return "undefined";
+}
+
+auto ToString(eProjectionType proj_type) -> std::string {
+    switch (proj_type) {
+        case eProjectionType::PERSPECTIVE:
+            return "perspective";
+        case eProjectionType::ORTHOGRAPHIC:
+            return "orthographic";
+    }
+    return "undefined";
+}
+
+auto ToString(eOrbitState state) -> std::string {
+    switch (state) {
+        case eOrbitState::IDLE:
+            return "idle";
+        case eOrbitState::ROTATE:
+            return "rotate";
+        case eOrbitState::PAN:
+            return "pan";
+        case eOrbitState::DOLLY:
+            return "dolly";
+    }
+    return "undefined";
+}
+
 }  // namespace renderer

@@ -1,8 +1,13 @@
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <string>
+#include <utility>
 
-#include <renderer/camera/orbit_camera_controller_t.hpp>
-#include <renderer/input/buttons.hpp>
+#include <spdlog/fmt/bundled/format.h>
+
+#include <renderer/engine/buttons.hpp>
+#include <renderer/engine/graphics/enums.hpp>
+#include <renderer/engine/orbit_camera_controller_t.hpp>
 
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -14,20 +19,6 @@
 
 namespace renderer {
 
-auto ToString(eOrbitState state) -> std::string {
-    switch (state) {
-        case eOrbitState::IDLE:
-            return "idle";
-        case eOrbitState::ROTATE:
-            return "rotate";
-        case eOrbitState::PAN:
-            return "pan";
-        case eOrbitState::DOLLY:
-            return "dolly";
-    }
-    return "undefined";
-}
-
 OrbitCameraController::OrbitCameraController(Camera::ptr camera,
                                              float viewportWidth,
                                              float viewportHeight)
@@ -38,9 +29,12 @@ OrbitCameraController::OrbitCameraController(Camera::ptr camera,
 }
 
 auto OrbitCameraController::Update(float dt) -> void {
+    if (m_Camera == nullptr) {
+        return;
+    }
     constexpr auto TWO_PI = static_cast<float>(math::PI);
 
-    auto pos_offset = m_Camera->position() - target;
+    auto pos_offset = m_Camera->pose.position - target;
     Vec3 target_offset;
 
     m_Spherical.SetFromCartesian(pos_offset);
@@ -90,10 +84,9 @@ auto OrbitCameraController::Update(float dt) -> void {
                         : m_PanOffset;
 
     this->target = this->target + target_offset;
-    m_Camera->SetTargetNoUpdate(this->target);
-    m_Camera->SetPositionNoUpdate(this->target + pos_offset);
-    m_Camera->ComputeBasisVectors();
-    m_Camera->UpdateViewMatrix();
+    m_Camera->target = this->target;
+    m_Camera->pose.position = this->target + pos_offset;
+    m_Camera->LookAt(this->target);
 
     if (enableDamping) {
         m_SphericalDelta.theta *= (1.0F - dampingFactor);
@@ -110,6 +103,10 @@ auto OrbitCameraController::Update(float dt) -> void {
 
 auto OrbitCameraController::OnMouseButtonCallback(int button, int action,
                                                   double x, double y) -> void {
+    if (m_Camera == nullptr) {
+        return;
+    }
+
     if (!enabled) {
         return;
     }
@@ -153,6 +150,10 @@ auto OrbitCameraController::OnMouseButtonCallback(int button, int action,
 }
 
 auto OrbitCameraController::OnMouseMoveCallback(double x, double y) -> void {
+    if (m_Camera == nullptr) {
+        return;
+    }
+
     if (!enabled) {
         return;
     }
@@ -188,11 +189,11 @@ auto OrbitCameraController::OnMouseMoveCallback(double x, double y) -> void {
             m_PanDelta =
                 (m_PanCurrent - m_PanStart) * static_cast<double>(panSpeed);
 
-            switch (m_Camera->proj_data().projection) {
+            switch (m_Camera->data.projection) {
                 case eProjectionType::PERSPECTIVE: {
-                    auto offset = m_Camera->position() - target;
+                    auto offset = m_Camera->pose.position - target;
                     auto target_distance = math::norm(offset);
-                    const auto FOV = m_Camera->proj_data().fov;
+                    const auto FOV = m_Camera->data.fov;
                     target_distance *= std::tan((FOV / 2.0F) * PI / 180.0F);
                     auto pan_horizontal_dist = 2.0F * m_PanDelta.x() *
                                                target_distance /
@@ -202,44 +203,44 @@ auto OrbitCameraController::OnMouseMoveCallback(double x, double y) -> void {
 
                     Vec3 diff_horizontal =
                         static_cast<double>(-pan_horizontal_dist) *
-                        m_Camera->right();
+                        m_Camera->v_right;
 
                     Vec3 diff_vertical;
                     if (screenSpacePanning) {
                         diff_vertical = static_cast<double>(pan_vertical_dist) *
-                                        m_Camera->up();
+                                        m_Camera->v_up;
                     } else {
                         diff_vertical =
                             static_cast<double>(pan_vertical_dist) *
-                            math::normalize(math::cross(m_Camera->world_up(),
-                                                        m_Camera->right()));
+                            math::normalize(math::cross(m_Camera->worldUp,
+                                                        m_Camera->v_right));
                     }
 
                     m_PanOffset = m_PanOffset + diff_horizontal + diff_vertical;
                     break;
                 }
                 case eProjectionType::ORTHOGRAPHIC:
-                    auto pan_horizontal_dist =
-                        m_PanDelta.x() * m_Camera->proj_data().width /
-                        m_Camera->zoom() / m_ViewportWidth;
-                    auto pan_vertical_dist =
-                        m_PanDelta.y() * m_Camera->proj_data().height /
-                        m_Camera->zoom() / m_ViewportHeight;
+                    auto pan_horizontal_dist = m_PanDelta.x() *
+                                               m_Camera->data.width /
+                                               m_Camera->zoom / m_ViewportWidth;
+                    auto pan_vertical_dist = m_PanDelta.y() *
+                                             m_Camera->data.height /
+                                             m_Camera->zoom / m_ViewportHeight;
 
                     // TODO(wilbert): refactor duplicated code here and above
                     Vec3 diff_horizontal =
                         static_cast<double>(-pan_horizontal_dist) *
-                        m_Camera->right();
+                        m_Camera->v_right;
 
                     Vec3 diff_vertical;
                     if (screenSpacePanning) {
                         diff_vertical = static_cast<double>(pan_vertical_dist) *
-                                        m_Camera->up();
+                                        m_Camera->v_up;
                     } else {
                         diff_vertical =
                             static_cast<double>(pan_vertical_dist) *
-                            math::normalize(math::cross(m_Camera->world_up(),
-                                                        m_Camera->right()));
+                            math::normalize(math::cross(m_Camera->worldUp,
+                                                        m_Camera->v_right));
                     }
 
                     m_PanOffset = m_PanOffset + diff_horizontal + diff_vertical;
@@ -280,8 +281,12 @@ auto OrbitCameraController::OnResizeCallback(int width, int height) -> void {
 }
 
 auto OrbitCameraController::_HandleDolly(float movement) -> void {
+    if (m_Camera == nullptr) {
+        return;
+    }
+
     const auto ZOOM_SCALE = std::pow(0.95F, zoomSpeed);
-    const auto PROJ_TYPE = m_Camera->proj_data().projection;
+    const auto PROJ_TYPE = m_Camera->data.projection;
     if (movement > 0.0F) {
         // Dolly out
         switch (PROJ_TYPE) {
@@ -290,8 +295,8 @@ auto OrbitCameraController::_HandleDolly(float movement) -> void {
                 break;
             }
             case eProjectionType::ORTHOGRAPHIC: {
-                m_Camera->SetZoom(std::max(
-                    minZoom, std::min(maxZoom, m_Camera->zoom() * ZOOM_SCALE)));
+                m_Camera->zoom = std::max(
+                    minZoom, std::min(maxZoom, m_Camera->zoom * ZOOM_SCALE));
                 break;
             }
         }
@@ -303,12 +308,29 @@ auto OrbitCameraController::_HandleDolly(float movement) -> void {
                 break;
             }
             case eProjectionType::ORTHOGRAPHIC: {
-                m_Camera->SetZoom(std::max(
-                    minZoom, std::min(maxZoom, m_Camera->zoom() / ZOOM_SCALE)));
+                m_Camera->zoom = std::max(
+                    minZoom, std::min(maxZoom, m_Camera->zoom / ZOOM_SCALE));
                 break;
             }
         }
     }
+}
+
+auto OrbitCameraController::ToString() const -> std::string {
+    auto camera_name = (m_Camera != nullptr ? m_Camera->name() : "None");
+    return fmt::format(
+        "<OrbitCameraController\n"
+        "  camera: {0}\n"
+        "  enabled: {1}\n"
+        "  state: {2}\n"
+        "  target: {3}\n"
+        "  sphere.rho: {4}\n"
+        "  sphere.phi: {5}\n"
+        "  sphere.theta: {6}\n"
+        ">\n",
+        camera_name, this->enabled, ::renderer::ToString(m_State),
+        this->target.toString(), m_Spherical.rho, m_Spherical.phi,
+        m_Spherical.theta);
 }
 
 }  // namespace renderer

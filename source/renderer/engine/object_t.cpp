@@ -7,17 +7,6 @@
 
 namespace renderer {
 
-auto ToString(eObjectType type) -> std::string {
-    switch (type) {
-        case eObjectType::BASE:
-            return "Base";
-        case eObjectType::MESH:
-            return "Mesh";
-        default:
-            return "Base";
-    }
-}
-
 Object3D::Object3D(const char* name) : m_Name(name) {}
 
 Object3D::Object3D(const char* name, Pose init_pose)

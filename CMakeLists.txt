@@ -62,22 +62,18 @@ loco_create_target(RendererCpp SHARED
     ${SOURCE_DIR}/backend/graphics/opengl/texture_opengl_t.cpp
     ${SOURCE_DIR}/backend/graphics/opengl/resources_manager_t.cpp
     ${SOURCE_DIR}/engine/input_manager_t.cpp
-    # ${SOURCE_DIR}/camera/camera_t.cpp
-    # ${SOURCE_DIR}/camera/camera_controller_t.cpp
-    # ${SOURCE_DIR}/camera/orbit_camera_controller_t.cpp
-    # ${SOURCE_DIR}/camera/fps_camera_controller_t.cpp
-    # ${SOURCE_DIR}/input/input_manager_t.cpp
     # ${SOURCE_DIR}/geometry/geometry_t.cpp
     # ${SOURCE_DIR}/geometry/geometry_factory.cpp
     # ${SOURCE_DIR}/light/light_t.cpp
     # ${SOURCE_DIR}/material/material_t.cpp
     # ${SOURCE_DIR}/debug/debug_drawer_t.cpp
-    # ${SOURCE_DIR}/engine/object_t.cpp
-    # ${SOURCE_DIR}/engine/scene_t.cpp
     # ${SOURCE_DIR}/engine/application_t.cpp
     ${SOURCE_DIR}/engine/object_t.cpp
     ${SOURCE_DIR}/engine/scene_t.cpp
     ${SOURCE_DIR}/engine/camera_t.cpp
+    ${SOURCE_DIR}/engine/camera_controller_t.cpp
+    ${SOURCE_DIR}/engine/orbit_camera_controller_t.cpp
+    # ${SOURCE_DIR}/engine/fps_camera_controller_t.cpp
   INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   TARGET_DEPENDENCIES

@@ -129,4 +129,46 @@ enum class eTextureIntFormat {
 /// Returns the string representation of the given internal format type
 RENDERER_API auto ToString(eTextureIntFormat tex_iformat) -> std::string;
 
+/// All valid object types in the engine
+enum class eObjectType : uint8_t {
+    BASE = 0,
+    SCENE = 1,
+    MESH = 2,
+    CAMERA = 3,
+    LIGHT = 4,
+};
+
+/// Returns a string representation of the given object type enum
+RENDERER_API auto ToString(eObjectType type) -> std::string;
+
+/// Available projection types
+enum class eProjectionType {
+    PERSPECTIVE,  //< Pin-hole perspective-like camera
+    ORTHOGRAPHIC  //< Isometric-like camera
+};
+
+/// Returns the string representation of the given projection enumerator
+RENDERER_API auto ToString(eProjectionType proj_type) -> std::string;
+
+/// Available controller types
+enum class eCameraController {
+    NONE,   /// Dummy controller (used for testing purposes)
+    ORBIT,  /// Handles orbiting, dollying, and panning
+    FPS,    /// Handles free movement like an fps game
+};
+
+/// Returns the string representation of the given controller type
+RENDERER_API auto ToString(eCameraController controller_type) -> std::string;
+
+/// Available states for the orbit camera controller
+enum class eOrbitState {
+    IDLE,    /// The user doesn't interact nor use the controller
+    ROTATE,  /// The user is using the left mouse button to rotate the view
+    PAN,     /// The user is using the right mouse button to pan the view
+    DOLLY    /// The user is using the mouse wheel to zoom in/out the view
+};
+
+/// Returns the string representation of the given orbit state enum
+RENDERER_API auto ToString(eOrbitState state) -> std::string;
+
 }  // namespace renderer

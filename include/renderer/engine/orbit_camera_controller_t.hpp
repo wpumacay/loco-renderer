@@ -6,7 +6,7 @@
 #include <string>
 
 #include <math/utils/spherical_coordinates.hpp>
-#include <renderer/camera/camera_controller_t.hpp>
+#include <renderer/engine/camera_controller_t.hpp>
 
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -17,17 +17,6 @@
 #endif
 
 namespace renderer {
-
-/// Available states for the orbit camera controller
-enum class eOrbitState {
-    IDLE,    /// The user doesn't interact nor use the controller
-    ROTATE,  /// The user is using the left mouse button to rotate the view
-    PAN,     /// The user is using the right mouse button to pan the view
-    DOLLY    /// The user is using the mouse wheel to zoom in/out the view
-};
-
-/// Returns the string representation of the given orbit state enum
-auto ToString(eOrbitState state) -> std::string;
 
 class OrbitCameraController : public ICameraController {
     // cppcheck-suppress unknownMacro
@@ -45,8 +34,8 @@ class OrbitCameraController : public ICameraController {
 
     auto OnKeyCallback(int key, int action, int modifier) -> void override {}
 
-    auto OnMouseButtonCallback(int button, int action, double x, double y)
-        -> void override;
+    auto OnMouseButtonCallback(int button, int action, double x,
+                               double y) -> void override;
 
     auto OnMouseMoveCallback(double x, double y) -> void override;
 
@@ -54,7 +43,9 @@ class OrbitCameraController : public ICameraController {
 
     auto OnResizeCallback(int width, int height) -> void override;
 
-    auto state() const -> eOrbitState { return m_State; }
+    RENDERER_NODISCARD auto state() const -> eOrbitState { return m_State; }
+
+    RENDERER_NODISCARD auto ToString() const -> std::string override;
 
  private:
     /// Compute the scale required for zooming in and out

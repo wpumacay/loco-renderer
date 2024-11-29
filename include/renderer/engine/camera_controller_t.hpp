@@ -3,10 +3,8 @@
 #include <string>
 #include <utility>
 
-#include <renderer/common.hpp>
-#include <utils/common.hpp>
-
-#include <renderer/camera/camera_t.hpp>
+#include <renderer/engine/graphics/enums.hpp>
+#include <renderer/engine/camera_t.hpp>
 
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -18,29 +16,17 @@
 
 namespace renderer {
 
-/// Available controller types
-enum class eCameraController {
-    NONE,   /// Dummy controller (used for testing purposes)
-    ORBIT,  /// Handles orbiting, dollying, and panning
-    FPS,    /// Handles free movement like an fps game
-};
-
-/// Returns the string representation of the given controller type
-auto ToString(const eCameraController& controller_type) -> std::string;
-
-/// Common interface for all supported camera controllers
-class ICameraController {
+/// Interface for all supported camera controllers
+class RENDERER_API ICameraController {
     // cppcheck-suppress unknownMacro
     NO_COPY_NO_MOVE_NO_ASSIGN(ICameraController)
 
     DEFINE_SMART_POINTERS(ICameraController)
 
  public:
-    /// Creates an empty/dummy controller for testing purposes
     explicit ICameraController(Camera::ptr camera)
         : m_Camera(std::move(camera)) {}
 
-    /// Frees the resources handled by this controller
     virtual ~ICameraController() = default;
 
     /// Updates the current state of the controller
@@ -62,11 +48,13 @@ class ICameraController {
     /// Called when a resize event is received
     virtual auto OnResizeCallback(int width, int height) -> void = 0;
 
+    RENDERER_NODISCARD virtual auto ToString() const -> std::string;
+
     /// Returns the type of this controller
-    auto type() const -> eCameraController { return m_Type; }
+    RENDERER_NODISCARD auto type() const -> eCameraController { return m_Type; }
 
     /// Returns the camera being handled by this controller
-    auto camera() const -> Camera::ptr { return m_Camera; }
+    RENDERER_NODISCARD auto camera() const -> Camera::ptr { return m_Camera; }
 
  public:
     /// Whether or not this controller is enabled
@@ -80,7 +68,7 @@ class ICameraController {
 };
 
 /// Dummy camera controller (events are just NOPs)
-class DummyCameraController : public ICameraController {
+class RENDERER_API DummyCameraController : public ICameraController {
     // cppcheck-suppress unknownMacro
     NO_COPY_NO_MOVE_NO_ASSIGN(DummyCameraController)
 
@@ -96,8 +84,8 @@ class DummyCameraController : public ICameraController {
 
     auto OnKeyCallback(int key, int action, int modifier) -> void override {}
 
-    auto OnMouseButtonCallback(int button, int action, double x, double y)
-        -> void override {}
+    auto OnMouseButtonCallback(int button, int action, double x,
+                               double y) -> void override {}
 
     auto OnMouseMoveCallback(double x, double y) -> void override {}
 

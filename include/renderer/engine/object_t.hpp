@@ -5,20 +5,9 @@
 #include <vector>
 
 #include <renderer/common.hpp>
+#include <renderer/engine/graphics/enums.hpp>
 
 namespace renderer {
-
-/// All valid object types in the engine
-enum class RENDERER_API eObjectType : uint8_t {
-    BASE = 0,
-    SCENE = 1,
-    MESH = 2,
-    CAMERA = 3,
-    LIGHT = 4,
-};
-
-/// Returns a string representation of the given object type enum
-RENDERER_API auto ToString(eObjectType type) -> std::string;
 
 /// Base interface for all objects supported by the engine
 class RENDERER_API Object3D : public std::enable_shared_from_this<Object3D> {
@@ -35,7 +24,7 @@ class RENDERER_API Object3D : public std::enable_shared_from_this<Object3D> {
     /// \param[in] init_pose The pose of this object in world space
     explicit Object3D(const char* name, Pose init_pose);
 
-    /// Creates an object with given position and orientation in world space
+    /// Creates an object with given position in world space
     /// \param[in] name The name of this object
     /// \param[in] init_pos The position of this object in world space
     explicit Object3D(const char* name, Vec3 init_pos);
@@ -58,7 +47,7 @@ class RENDERER_API Object3D : public std::enable_shared_from_this<Object3D> {
  public:
     /// The 3d pose of this object respect to world space. If object has a
     /// parent object, then this pose is relative to that parent object
-    Pose pose{};
+    Pose pose;
 
     /// A weak reference to the parent of this object
     std::weak_ptr<Object3D> parent;
@@ -71,7 +60,7 @@ class RENDERER_API Object3D : public std::enable_shared_from_this<Object3D> {
     eObjectType m_Type{eObjectType::BASE};
 
     /// A unique identifier of this object
-    std::string m_Name{};
+    std::string m_Name;
 };
 
 }  // namespace renderer

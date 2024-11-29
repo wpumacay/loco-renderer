@@ -2,18 +2,10 @@
 
 #include <string>
 
+#include <renderer/engine/graphics/enums.hpp>
 #include <renderer/engine/object_t.hpp>
 
 namespace renderer {
-
-/// Available projection types
-enum class RENDERER_API eProjectionType {
-    PERSPECTIVE,  //< Pin-hole perspective-like camera
-    ORTHOGRAPHIC  //< Isometric-like camera
-};
-
-/// Returns the string representation of the given projection enumerator
-RENDERER_API auto ToString(const eProjectionType& proj_type) -> std::string;
 
 /// Parameters required to define the projection appropriately
 struct RENDERER_API CameraData {
@@ -32,7 +24,7 @@ struct RENDERER_API CameraData {
     /// Distance to the furthest plane of the view-volume
     float far{100.0F};
 
-    /// Returns the string representation of this projection data
+    /// Returns the string representation of this object
     RENDERER_NODISCARD auto ToString() const -> std::string;
 };
 
@@ -47,10 +39,10 @@ class RENDERER_API Camera : public Object3D {
 
     ~Camera() override = default;
 
-    /// Updates the view matrix from the current state of the camera
+    /// Computes the view matrix from the current state of the camera
     auto ComputeViewMatrix() const -> Mat4;
 
-    /// Updates the projection matrix from the current state of the camera
+    /// Computes the projection matrix from the current state of the camera
     auto ComputeProjectionMatrix() const -> Mat4;
 
     /// Computes the basis vectors from the given target point

@@ -7,16 +7,6 @@
 
 namespace renderer {
 
-auto ToString(const eProjectionType& proj_type) -> std::string {
-    switch (proj_type) {
-        case eProjectionType::PERSPECTIVE:
-            return "perspective";
-        case eProjectionType::ORTHOGRAPHIC:
-            return "orthographic";
-    }
-    return "undefined";
-}
-
 auto CameraData::ToString() const -> std::string {
     return fmt::format(
         "<CameraData\n"
@@ -135,17 +125,19 @@ auto Camera::LookAt(Quat orientation) -> void {
 auto Camera::ToString() const -> std::string {
     return fmt::format(
         "<Camera\n"
-        "  position={0}\n"
-        "  orientation={1}\n"
-        "  target={2}\n"
-        "  zoom={3}\n"
-        "  front={4}\n"
-        "  right={5}\n"
-        "  up={6}\n"
+        "  name={0}\n"
+        "  position={1}\n"
+        "  orientation={2}\n"
+        "  target={3}\n"
+        "  zoom={4}\n"
+        "  front={5}\n"
+        "  right={6}\n"
+        "  up={7}\n"
         ">\n",
-        this->pose.position.toString(), this->pose.orientation.toString(),
-        this->target.toString(), this->zoom, this->v_front.toString(),
-        this->v_right.toString(), this->v_up.toString());
+        m_Name, this->pose.position.toString(),
+        this->pose.orientation.toString(), this->target.toString(), this->zoom,
+        this->v_front.toString(), this->v_right.toString(),
+        this->v_up.toString());
 }
 
 }  // namespace renderer
