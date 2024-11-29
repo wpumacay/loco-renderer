@@ -57,7 +57,6 @@ auto OpenGLBufferLayout::operator[](size_t index) const -> OpenGLBufferElement {
 }
 
 auto OpenGLBufferLayout::ToString() const -> std::string {
-    uint32_t index = 0;
     std::string str_repr{"<OpenGLBufferLayout({\n"};
     for (const auto& element : m_BufferElements) {
         str_repr += fmt::format(
@@ -65,7 +64,6 @@ auto OpenGLBufferLayout::ToString() const -> std::string {
             "normalized={5}]\n",
             element.name, renderer::ToString(element.type), element.count,
             element.nbytes, element.offset, element.normalized);
-        index++;
     }
     str_repr += "})>\n";
     return str_repr;

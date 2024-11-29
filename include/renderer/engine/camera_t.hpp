@@ -67,19 +67,19 @@ class RENDERER_API Camera : public Object3D {
     CameraData data{};
 
     /// Target point of the camera w.r.t. the world frame
-    Vec3 target{};
+    Vec3 target;
 
     /// Value of the zoom used for this camera
     float zoom{1.0F};
 
     /// Z-axis of the reference frame of this camera
-    Vec3 v_front{};
+    Vec3 v_front;
 
     /// Y-axis of the reference frame of this camera
-    Vec3 v_up{};
+    Vec3 v_up;
 
     /// X-axis of the reference frame of this camera
-    Vec3 v_right{};
+    Vec3 v_right;
 
     /// World-up vector used by this camera setting
     Vec3 worldUp = {0.0, 0.0, 1.0};
