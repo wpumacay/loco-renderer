@@ -27,25 +27,20 @@ set(RENDERER_DEP_VERSION_glfw
     CACHE STRING
           "Version of GLFW to be fetched (used to create an xplatf. window) ")
 
-# set(RENDERER_DEP_VERSION_imgui c6e0284ac58b3f205c95365478888f7b53b077e2 #
-# Release 1.89.9 CACHE STRING "Version of Dear-ImGui to be fetched (used for
-# prototyping UI)")
-
 set(RENDERER_DEP_VERSION_utils
-    a1cd8242e5dbfa385719a89a6502649aa2cd1633 # Version v0.2.10
+    71b8620301da236c0b38cd3732bbaeccef5563ff # Version v0.2.13
     CACHE STRING "Version of internal utilities repo to be fetched")
 
 set(RENDERER_DEP_VERSION_math
-    d0a29407901b35f39b9cf94b1e4dfea604e6c2a7 # Version v0.6.11
+    e2cd57e3dc01dc0ac7c1b083208ed6feb3ed6a79 # Version v0.6.16
     CACHE STRING "Version of internal math repo to be fetched")
 
 set(RENDERER_DEP_VERSION_pybind11
-    8a099e44b3d5f85b20f05828d919d2332a8de841 # Release v2.11.1
+    a2e59f0e7065404b44dfe92a28aca47ba1378dc4 # Release v2.13.6
     CACHE STRING "Version of PyBind11 to be fetched (used for python bindings)")
 
 mark_as_advanced(RENDERER_DEP_VERSION_catch2)
 mark_as_advanced(RENDERER_DEP_VERSION_glfw)
-# mark_as_advanced(RENDERER_DEP_VERSION_imgui)
 mark_as_advanced(RENDERER_DEP_VERSION_utils)
 mark_as_advanced(RENDERER_DEP_VERSION_math)
 mark_as_advanced(RENDERER_DEP_VERSION_pybind11)
