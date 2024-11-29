@@ -6,7 +6,7 @@
 namespace renderer {
 
 /// Available graphics APIs
-enum class RENDERER_API eGraphicsAPI {
+enum class eGraphicsAPI {
     OPENGL,
     VULKAN,
     DIRECTX11,
@@ -17,7 +17,7 @@ enum class RENDERER_API eGraphicsAPI {
 RENDERER_API auto ToString(eGraphicsAPI api) -> std::string;
 
 /// Available windowing backends
-enum class RENDERER_API eWindowBackend {
+enum class eWindowBackend {
     /// None or dummy backend (for testing purposes only)
     TYPE_NONE,
     /// GLFW backend (used for creating a window for OpenGL in any platform)
@@ -30,7 +30,7 @@ enum class RENDERER_API eWindowBackend {
 RENDERER_API auto ToString(eWindowBackend type) -> std::string;
 
 /// Available shader types
-enum class RENDERER_API eShaderType {
+enum class eShaderType {
     VERTEX,    //< Associated to a vertex shasder
     FRAGMENT,  //< Associated to a fragment shader
     GEOMETRY,  //< Associated to a geometry shader
@@ -41,7 +41,7 @@ enum class RENDERER_API eShaderType {
 RENDERER_API auto ToString(eShaderType type) -> std::string;
 
 /// Type of element used for part (or all) elements in a GPU vertex buffer
-enum class RENDERER_API eElementType {
+enum class eElementType {
     FLOAT_1,  ///< Single float, size 4-bytes
     FLOAT_2,  ///< Two float compound (vec2), size 8-bytes
     FLOAT_3,  ///< Three float compound (vec3), size 12-bytes
@@ -62,7 +62,7 @@ RENDERER_API auto GetElementSize(eElementType etype) -> uint32_t;
 RENDERER_API auto GetElementCount(eElementType etype) -> uint32_t;
 
 /// Available modes in which a VBO can be used
-enum class RENDERER_API eBufferUsage {
+enum class eBufferUsage {
     STATIC,  //< A chunk of GPU memory that won't change during execution
     DYNAMIC  //< A chunk of GPU memory that could change during execution
 };
@@ -71,7 +71,7 @@ enum class RENDERER_API eBufferUsage {
 RENDERER_API auto ToString(eBufferUsage usage) -> std::string;
 
 /// Available format for the type of data stored in general textures
-enum class RENDERER_API eTextureFormat {
+enum class eTextureFormat {
     RGB,
     RGBA,
     BGRA,
@@ -83,7 +83,7 @@ enum class RENDERER_API eTextureFormat {
 RENDERER_API auto ToString(eTextureFormat format) -> std::string;
 
 /// Available storage options for a buffer of memory (how it's represented)
-enum class RENDERER_API eStorageType {
+enum class eStorageType {
     UINT_8,
     UINT_32,
     FLOAT_32,
@@ -93,7 +93,7 @@ enum class RENDERER_API eStorageType {
 RENDERER_API auto ToString(eStorageType dtype) -> std::string;
 
 /// Available wrapping modes for a texture
-enum class RENDERER_API eTextureWrap {
+enum class eTextureWrap {
     REPEAT,
     REPEAT_MIRROR,
     CLAMP_TO_EDGE,
@@ -104,7 +104,7 @@ enum class RENDERER_API eTextureWrap {
 RENDERER_API auto ToString(eTextureWrap tex_wrap) -> std::string;
 
 /// Available texture filter options for a texture
-enum class RENDERER_API eTextureFilter {
+enum class eTextureFilter {
     NEAREST,
     LINEAR,
     NEAREST_MIPMAP_NEAREST,
@@ -117,7 +117,7 @@ enum class RENDERER_API eTextureFilter {
 RENDERER_API auto ToString(eTextureFilter tex_filter) -> std::string;
 
 /// Available internal formats types for a texture
-enum class RENDERER_API eTextureIntFormat {
+enum class eTextureIntFormat {
     RED,
     RG,
     RGB,
