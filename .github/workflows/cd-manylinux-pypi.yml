@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Download the manylinux wheel
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: python-${{ matrix.py-version }}-manylinux-wheel
           path: dist/
@@ -92,7 +92,7 @@ jobs:
 
     steps:
       - name:  Download the manylinux wheel
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: python-${{ matrix.py-version }}-manylinux-wheel
           path: dist/
