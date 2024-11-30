@@ -1,8 +1,12 @@
 #include <algorithm>
+#include <string>
+#include <utility>
 
-#include <renderer/camera/fps_camera_controller_t.hpp>
-#include <renderer/input/buttons.hpp>
-#include <renderer/input/keycodes.hpp>
+#include <spdlog/fmt/bundled/format.h>
+
+#include <renderer/engine/buttons.hpp>
+#include <renderer/engine/keycodes.hpp>
+#include <renderer/engine/fps_camera_controller_t.hpp>
 
 #include <utils/logging.hpp>
 
@@ -22,6 +26,10 @@ FpsCameraController::FpsCameraController(Camera::ptr camera)
 }
 
 auto FpsCameraController::Update(float dt) -> void {
+    if (m_Camera == nullptr) {
+        return;
+    }
+
     constexpr auto MAX_DT = 0.1F;  // Max delta allowed is 100ms
     dt = std::min(MAX_DT, dt);
 
@@ -42,21 +50,26 @@ auto FpsCameraController::Update(float dt) -> void {
         velocity.x() -= direction.x() * 400.0F * dt;
     }
 
-    auto dfront = m_Camera->front() * static_cast<double>(velocity.z() * dt);
-    auto dright = m_Camera->right() * (static_cast<double>(-velocity.x() * dt));
+    auto dfront = m_Camera->v_front * static_cast<double>(velocity.z() * dt);
+    auto dright = m_Camera->v_right * (static_cast<double>(-velocity.x() * dt));
     auto dtotal = dfront + dright;
 
-    m_Camera->SetTargetNoUpdate(m_Camera->target() + dtotal);
-    m_Camera->SetPositionNoUpdate(m_Camera->position() + dtotal);
+    m_Camera->target = m_Camera->target + dtotal;
+    m_Camera->pose.position = m_Camera->pose.position + dtotal;
     // Update the orientation (changes in pitch and yaw)
     // TODO(wilbert): implement remaining updates
 
-    m_Camera->ComputeBasisVectors();
-    m_Camera->UpdateViewMatrix();
+    LOG_CORE_TRACE("position: {0}", m_Camera->pose.position.toString());
+
+    m_Camera->LookAt(m_Camera->target);
 }
 
-auto FpsCameraController::OnKeyCallback(int key, int action, int modifier)
-    -> void {
+auto FpsCameraController::OnKeyCallback(int key, int action,
+                                        int modifier) -> void {
+    if (m_Camera == nullptr) {
+        return;
+    }
+
     if (!enabled) {
         return;
     }
@@ -114,6 +127,10 @@ auto FpsCameraController::OnKeyCallback(int key, int action, int modifier)
 }
 
 auto FpsCameraController::OnMouseMoveCallback(double x, double y) -> void {
+    if (m_Camera == nullptr) {
+        return;
+    }
+
     if (!enabled) {
         return;
     }
@@ -128,12 +145,26 @@ auto FpsCameraController::OnMouseMoveCallback(double x, double y) -> void {
     Euler euler;
     euler.order = ::math::euler::Order::ZXY;
     euler.convention = ::math::euler::Convention::INTRINSIC;
-    euler.setFromQuaternion(m_Camera->orientation());
+    euler.setFromQuaternion(m_Camera->pose.orientation);
 
     euler.x -= dy * 0.002F * this->pointerSpeed;
     euler.y -= dx * 0.002F * this->pointerSpeed;
 
-    m_Camera->SetOrientation(Quat(euler));
+    m_Camera->LookAt(Quat(euler));
+}
+
+auto FpsCameraController::ToString() const -> std::string {
+    auto camera_name = (m_Camera != nullptr ? m_Camera->name() : "None");
+    return fmt::format(
+        "<FpsCameraController\n"
+        "  camera: {0}\n"
+        "  enabled: {1}\n"
+        "  moveForward: {2}\n"
+        "  moveBackward: {3}\n"
+        "  moveRight: {4}\n"
+        "  moveLeft: {5}\n"
+        ">\n",
+        camera_name, this->enabled);
 }
 
 }  // namespace renderer

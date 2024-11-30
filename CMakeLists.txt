@@ -73,7 +73,7 @@ loco_create_target(RendererCpp SHARED
     ${SOURCE_DIR}/engine/camera_t.cpp
     ${SOURCE_DIR}/engine/camera_controller_t.cpp
     ${SOURCE_DIR}/engine/orbit_camera_controller_t.cpp
-    # ${SOURCE_DIR}/engine/fps_camera_controller_t.cpp
+    ${SOURCE_DIR}/engine/fps_camera_controller_t.cpp
   INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   TARGET_DEPENDENCIES

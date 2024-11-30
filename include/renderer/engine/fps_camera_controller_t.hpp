@@ -2,7 +2,9 @@
 
 // Implementation based on ThreeJS PointerLockControls [4]
 
-#include <renderer/camera/camera_controller_t.hpp>
+#include <string>
+
+#include <renderer/engine/camera_controller_t.hpp>
 
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -14,7 +16,7 @@
 
 namespace renderer {
 
-class FpsCameraController : public ICameraController {
+class RENDERER_API FpsCameraController : public ICameraController {
     // cppcheck-suppress unknownMacro
     NO_COPY_NO_MOVE_NO_ASSIGN(FpsCameraController)
 
@@ -38,8 +40,8 @@ class FpsCameraController : public ICameraController {
     auto OnKeyCallback(int key, int action, int modifier) -> void override;
 
     /// This controller doesn't setup nor use any resources during this callback
-    auto OnMouseButtonCallback(int button, int action, double x, double y)
-        -> void override {}
+    auto OnMouseButtonCallback(int button, int action, double x,
+                               double y) -> void override {}
 
     /// Handle the orientation of the camera by focusing on a target point
     auto OnMouseMoveCallback(double x, double y) -> void override;
@@ -49,6 +51,8 @@ class FpsCameraController : public ICameraController {
 
     /// This controller doesn't setup nor use any resources during this callback
     auto OnResizeCallback(int width, int height) -> void override {}
+
+    RENDERER_NODISCARD auto ToString() const -> std::string override;
 
  public:
     /// The lower limit of the pitch of the camera

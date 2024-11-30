@@ -14,6 +14,7 @@
 #include <renderer/engine/camera_t.hpp>
 #include <renderer/engine/camera_controller_t.hpp>
 #include <renderer/engine/orbit_camera_controller_t.hpp>
+#include <renderer/engine/fps_camera_controller_t.hpp>
 
 #if defined(RENDERER_IMGUI)
 #include <imgui.h>
@@ -126,6 +127,9 @@ auto main() -> int {
             camera, static_cast<float>(g_window_width),
             static_cast<float>(g_window_height));
 
+    //// ::renderer::ICameraController::ptr camera_controller =
+    ////     std::make_shared<::renderer::FpsCameraController>(camera);
+
     window->RegisterResizeCallback([&](int width, int height) {
         g_window_width = width;
         g_window_height = height;
@@ -174,7 +178,7 @@ auto main() -> int {
         texture->Bind();
         vao->Bind();
 
-        camera->LookAt(Vec3(0.0F, 0.0F, 0.0F));
+        camera_controller->Update(::utils::Clock::GetTimeStep());
 
         program->SetMat4("u_model_matrix", Mat4::Identity());
         program->SetMat4("u_view_matrix", camera->ComputeViewMatrix());
