@@ -18,7 +18,7 @@
 
 namespace renderer {
 
-class OrbitCameraController : public ICameraController {
+class RENDERER_API OrbitCameraController : public ICameraController {
     // cppcheck-suppress unknownMacro
     NO_COPY_NO_MOVE_NO_ASSIGN(OrbitCameraController)
 
