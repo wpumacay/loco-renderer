@@ -29,6 +29,12 @@ class RENDERER_API IRenderer {
     /// \param[in] camera The camera to use as viewpoint for the render
     virtual auto Render(Scene::ptr scene, Camera::ptr camera) -> void = 0;
 
+    /// Enables/Disables the rendering pipeline (apart from debug drawer)
+    auto SetEnabled(bool enable) -> void { m_Enabled = enable; }
+
+    /// Enables/Disables the debug drawer pipeline
+    auto SetDebugEnabled(bool enable) -> void { m_DebugEnabled = enable; }
+
     /// Returns whether or not the renderer is enabled
     RENDERER_NODISCARD auto enabled() const -> bool { return m_Enabled; }
 
