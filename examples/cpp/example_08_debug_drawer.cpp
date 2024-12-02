@@ -92,9 +92,16 @@ auto main() -> int {
         debug_drawer->DrawLine({0.0F, 0.0F, 0.0F}, {0.0F, 0.0F, 5.0F},
                                {0.0F, 0.0F, 1.0F});
 
-        debug_drawer->DrawBox({0.1F, 0.15F, 0.2F},
-                              Pose(Vec3(1.0F, 1.0F, 1.0F), Quat()),
+        Pose box_pose(Vec3(1.0F, 1.0F, 1.0F), Quat());
+        debug_drawer->DrawBox({0.1F, 0.15F, 0.2F}, box_pose,
                               {1.0F, 1.0F, 1.0F});
+
+        Pose sphere_pose(Vec3(1.0F, -1.0F, 1.0F), Quat());
+        debug_drawer->DrawSphere(0.2F, sphere_pose, {0.1F, 0.1F, 0.8F});
+
+        Pose cylinder_pose(Vec3(-1.0F, 1.0F, 1.0F), Quat());
+        debug_drawer->DrawCylinder(0.2F, 0.2F, cylinder_pose,
+                                   {0.1F, 0.8F, 0.1F});
 
         debug_drawer->Render(*camera);
 
