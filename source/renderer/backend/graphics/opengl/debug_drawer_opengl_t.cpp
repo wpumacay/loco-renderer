@@ -79,7 +79,7 @@ auto OpenGLDebugDrawer::DrawBox(Vec3 size, Pose pose, Vec3 color) -> void {
         Vec3(-HALF_WIDTH, -HALF_DEPTH, HALF_HEIGHT)};
 
     for (auto& vertex : vertices) {
-        vertex = Vec3(pose * vertex);
+        vertex = pose * vertex;
     }
 
     DrawLine(vertices[0], vertices[1], color);
@@ -111,6 +111,112 @@ auto OpenGLDebugDrawer::DrawBox(Vec3 size, Pose pose, Vec3 color) -> void {
     DrawLine(vertices[5], vertices[4], color);
     DrawLine(vertices[4], vertices[0], color);
     DrawLine(vertices[0], vertices[1], color);
+}
+
+auto OpenGLDebugDrawer::DrawSphere(float radius, Pose pose,
+                                   Vec3 color) -> void {
+    constexpr size_t NUM_CIRCLE_POINTS = 20;
+    // Create the vertices for the main circles (xy, yz, xz)
+    std::array<Vec3, NUM_CIRCLE_POINTS> circle_pts_xy;
+    std::array<Vec3, NUM_CIRCLE_POINTS> circle_pts_yz;
+    std::array<Vec3, NUM_CIRCLE_POINTS> circle_pts_xz;
+    for (size_t i = 0; i < NUM_CIRCLE_POINTS; ++i) {
+        auto theta = 2.0F * PI * static_cast<float>(i) /
+                     static_cast<float>(NUM_CIRCLE_POINTS);
+        auto r_cos_theta = radius * std::cos(theta);
+        auto r_sin_theta = radius * std::sin(theta);
+        circle_pts_xy.at(i) = {r_cos_theta, r_sin_theta, 0.0F};
+        circle_pts_yz.at(i) = {0.0F, r_cos_theta, r_sin_theta};
+        circle_pts_xz.at(i) = {r_sin_theta, 0.0F, r_cos_theta};
+    }
+
+    // Transform all points into world space
+    for (auto& vertex : circle_pts_xy) {
+        vertex = pose * vertex;
+    }
+    for (auto& vertex : circle_pts_yz) {
+        vertex = pose * vertex;
+    }
+    for (auto& vertex : circle_pts_xz) {
+        vertex = pose * vertex;
+    }
+
+    // Draw each main circle
+    for (size_t i = 0; i < circle_pts_xy.size(); ++i) {
+        DrawLine(circle_pts_xy.at(i % circle_pts_xy.size()),
+                 circle_pts_xy.at((i + 1) % circle_pts_xy.size()), color);
+    }
+    for (size_t i = 0; i < circle_pts_yz.size(); ++i) {
+        DrawLine(circle_pts_yz.at(i % circle_pts_yz.size()),
+                 circle_pts_yz.at((i + 1) % circle_pts_yz.size()), color);
+    }
+    for (size_t i = 0; i < circle_pts_xz.size(); ++i) {
+        DrawLine(circle_pts_xz.at(i % circle_pts_xz.size()),
+                 circle_pts_xz.at((i + 1) % circle_pts_xz.size()), color);
+    }
+}
+
+auto OpenGLDebugDrawer::DrawCylinder(float radius, float height, Pose pose,
+                                     Vec3 color) -> void {
+    constexpr size_t NUM_CIRCLE_POINTS = 20;
+    // Create first main rectangle
+    std::array<Vec3, 4> rect_pts_yz;
+    rect_pts_yz.at(0) = Vec3(0.0F, -radius, -0.5F * height);
+    rect_pts_yz.at(1) = Vec3(0.0F, radius, -0.5F * height);
+    rect_pts_yz.at(2) = Vec3(0.0F, radius, 0.5F * height);
+    rect_pts_yz.at(3) = Vec3(0.0F, -radius, 0.5F * height);
+
+    // Create second main rectangle
+    std::array<Vec3, 4> rect_pts_xz;
+    rect_pts_xz.at(0) = Vec3(-radius, 0.0F, -0.5F * height);
+    rect_pts_xz.at(1) = Vec3(radius, 0.0F, -0.5F * height);
+    rect_pts_xz.at(2) = Vec3(radius, 0.0F, 0.5F * height);
+    rect_pts_xz.at(3) = Vec3(-radius, 0.0F, 0.5F * height);
+
+    // Create top and bottom base circles
+    std::array<Vec3, NUM_CIRCLE_POINTS> circle_pts_top;
+    std::array<Vec3, NUM_CIRCLE_POINTS> circle_pts_bottom;
+    for (size_t i = 0; i < NUM_CIRCLE_POINTS; ++i) {
+        auto theta = 2.0F * PI * static_cast<float>(i) /
+                     static_cast<float>(NUM_CIRCLE_POINTS);
+        auto r_cos_theta = radius * std::cos(theta);
+        auto r_sin_theta = radius * std::sin(theta);
+        circle_pts_top.at(i) = {r_cos_theta, r_sin_theta, 0.5F * height};
+        circle_pts_bottom.at(i) = {r_cos_theta, r_sin_theta, -0.5F * height};
+    }
+
+    // Transform all points into world space
+    for (auto& vertex : rect_pts_yz) {
+        vertex = pose * vertex;
+    }
+    for (auto& vertex : rect_pts_xz) {
+        vertex = pose * vertex;
+    }
+    for (auto& vertex : circle_pts_top) {
+        vertex = pose * vertex;
+    }
+    for (auto& vertex : circle_pts_bottom) {
+        vertex = pose * vertex;
+    }
+
+    // Draw all components of our cylinder
+    for (size_t i = 0; i < rect_pts_yz.size(); ++i) {
+        DrawLine(rect_pts_yz.at(i % rect_pts_yz.size()),
+                 rect_pts_yz.at((i + 1) % rect_pts_yz.size()), color);
+    }
+    for (size_t i = 0; i < rect_pts_xz.size(); ++i) {
+        DrawLine(rect_pts_xz.at(i % rect_pts_xz.size()),
+                 rect_pts_xz.at((i + 1) % rect_pts_xz.size()), color);
+    }
+    for (size_t i = 0; i < circle_pts_top.size(); ++i) {
+        DrawLine(circle_pts_top.at(i % circle_pts_top.size()),
+                 circle_pts_top.at((i + 1) % circle_pts_top.size()), color);
+    }
+    for (size_t i = 0; i < circle_pts_bottom.size(); ++i) {
+        DrawLine(circle_pts_bottom.at(i % circle_pts_bottom.size()),
+                 circle_pts_bottom.at((i + 1) % circle_pts_bottom.size()),
+                 color);
+    }
 }
 
 auto OpenGLDebugDrawer::Render(const Camera& camera) -> void {

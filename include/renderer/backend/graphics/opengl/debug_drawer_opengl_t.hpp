@@ -55,6 +55,20 @@ class RENDERER_API OpenGLDebugDrawer {
     /// \param[in] color The color of the box to be drawn
     auto DrawBox(Vec3 size, Pose pose, Vec3 color) -> void;
 
+    /// Requests a sphere to be drawn with the given properties
+    /// \param[in] radius The radius of the sphere to be drawn
+    /// \param[in] pose The pose of the sphere in world space
+    /// \param[in] color The color of the sphere to be drawn
+    auto DrawSphere(float radius, Pose pose, Vec3 color) -> void;
+
+    /// Request a cylinder to be drawn with the given properties
+    /// \param[in] radius The radius of the cylinder
+    /// \param[in] height The height of the cylinder
+    /// \param[in] pose The pose of the cylinder in world space
+    /// \param[in] color The color of the cylinder
+    auto DrawCylinder(float radius, float height, Pose pose,
+                      Vec3 color) -> void;
+
     /// Renders all primitives from the given viewpoint
     /// \param[in] camera The camera used to render from
     auto Render(const Camera& camera) -> void;
