@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <string>
-#include <memory>
 
 #include <renderer/common.hpp>
 #include <renderer/backend/graphics/opengl/vertex_buffer_opengl_t.hpp>
@@ -40,12 +39,25 @@ class RENDERER_API OpenGLVertexArray {
     /// Unbinds this VAO from the OpenGL-FSM
     auto Unbind() const -> void;
 
+    /// Returns an unmutable reference to the VBO at the given index
+    RENDERER_NODISCARD auto GetVertexBuffer(uint32_t vbo_index) const
+        -> const OpenGLVertexBuffer&;
+
+    /// Returns a mutable reference to the VBO at the given index
+    RENDERER_NODISCARD auto GetVertexBuffer(uint32_t vbo_index)
+        -> OpenGLVertexBuffer&;
+
     /// Returns the id associated with this object on the GPU
     RENDERER_NODISCARD auto opengl_id() const -> uint32_t { return m_OpenGLId; }
 
     ///  Returns the current number of attributes managed by the VAO
     RENDERER_NODISCARD auto num_attribs() const -> uint32_t {
         return m_NumAttribIndx;
+    }
+
+    /// Returns the number of VBOs managed by this object
+    RENDERER_NODISCARD auto num_vbos() const -> size_t {
+        return m_Buffers.size();
     }
 
     /// Returns a string representation of this VAO

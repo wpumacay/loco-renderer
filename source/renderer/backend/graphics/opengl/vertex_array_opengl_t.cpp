@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -87,6 +88,26 @@ auto OpenGLVertexArray::Bind() const -> void { glBindVertexArray(m_OpenGLId); }
 
 // NOLINTNEXTLINE
 auto OpenGLVertexArray::Unbind() const -> void { glBindVertexArray(0); }
+
+auto OpenGLVertexArray::GetVertexBuffer(uint32_t vbo_index) const
+    -> const OpenGLVertexBuffer& {
+    if (vbo_index >= m_Buffers.size()) {
+        auto message = fmt::format("Index {0} out of range {1}", vbo_index,
+                                   m_Buffers.size());
+        throw std::runtime_error(message);
+    }
+    return *m_Buffers[vbo_index];
+}
+
+auto OpenGLVertexArray::GetVertexBuffer(uint32_t vbo_index)
+    -> OpenGLVertexBuffer& {
+    if (vbo_index >= m_Buffers.size()) {
+        auto message = fmt::format("Index {0} out of range {1}", vbo_index,
+                                   m_Buffers.size());
+        throw std::runtime_error(message);
+    }
+    return *m_Buffers[vbo_index];
+}
 
 auto OpenGLVertexArray::ToString() const -> std::string {
     return fmt::format(
