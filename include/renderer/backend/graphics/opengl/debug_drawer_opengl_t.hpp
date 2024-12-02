@@ -53,6 +53,14 @@ class RENDERER_API OpenGLDebugDrawer {
     /// \param[in] camera The camera used to render from
     auto Render(const Camera& camera) -> void;
 
+    /// Resets all running counters. Call after the user reads the data
+    auto ClearCounters() -> void;
+
+    /// Returns the number of drawcalls spent during the render process
+    RENDERER_NODISCARD auto num_drawcalls() const -> size_t {
+        return m_NumDrawCalls;
+    }
+
     /// Returns a string representation of this debug drawer
     RENDERER_NODISCARD auto ToString() const -> std::string;
 
@@ -72,6 +80,9 @@ class RENDERER_API OpenGLDebugDrawer {
 
     /// Container for all lines being requested by the user
     std::vector<Line> m_LinesContainer;
+
+    /// Counter for the number of draw calls spent by this object
+    size_t m_NumDrawCalls{0};
 };
 
 }  // namespace opengl

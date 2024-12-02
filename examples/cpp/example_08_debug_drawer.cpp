@@ -9,6 +9,10 @@
 #include <renderer/engine/graphics/window_t.hpp>
 #include <renderer/backend/graphics/opengl/debug_drawer_opengl_t.hpp>
 
+#if defined(RENDERER_IMGUI)
+#include <imgui.h>
+#endif  // RENDERER_IMGUI
+
 auto main() -> int {
     ::utils::Clock::Init();
 
@@ -89,6 +93,14 @@ auto main() -> int {
                                {0.0F, 0.0F, 1.0F});
 
         debug_drawer->Render(*camera);
+
+#if defined(RENDERER_IMGUI)
+        ImGui::Begin("Debug Drawer");
+        ImGui::Text("num drawcalls: {%zu}", debug_drawer->num_drawcalls());
+        debug_drawer->ClearCounters();
+
+        ImGui::End();
+#endif
 
         window->End();
 

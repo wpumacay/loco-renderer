@@ -149,8 +149,11 @@ auto OpenGLDebugDrawer::_RenderBatchOfLines(
     m_LinesVAO->Bind();
     lines_vbo.UpdateData(static_cast<uint32_t>(VBO_SUBSIZE), lines_data);
     glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(lines_number * 2));
+    m_NumDrawCalls++;
     m_LinesVAO->Unbind();
 }
+
+auto OpenGLDebugDrawer::ClearCounters() -> void { m_NumDrawCalls = 0; }
 
 auto OpenGLDebugDrawer::ToString() const -> std::string {
     return fmt::format(
