@@ -126,7 +126,7 @@ auto OpenGLDebugDrawer::Render(const Camera& camera) -> void {
         const auto NUM_REMAINING_LINES =
             m_LinesContainer.size() % LINES_BATCH_SIZE;
 
-        std::array<float, LINES_BATCH_SIZE> lines_batch{};
+        std::array<float, LINES_BATCH_SIZE * FLOATS_PER_LINE> lines_batch{};
         for (uint32_t batch_idx = 0; batch_idx < NUM_FULL_BATCHES;
              ++batch_idx) {
             for (uint32_t line_idx = 0; line_idx < LINES_BATCH_SIZE;
