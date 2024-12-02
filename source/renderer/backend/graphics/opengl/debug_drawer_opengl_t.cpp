@@ -58,6 +58,59 @@ OpenGLDebugDrawer::OpenGLDebugDrawer() {
 
 auto OpenGLDebugDrawer::DrawLine(Vec3 start, Vec3 end, Vec3 color) -> void {
     m_LinesContainer.emplace_back(start, end, color);
+    m_NumLinesDrawn++;
+}
+
+auto OpenGLDebugDrawer::DrawBox(Vec3 size, Pose pose, Vec3 color) -> void {
+    const auto HALF_WIDTH = 0.5F * size.x();
+    const auto HALF_DEPTH = 0.5F * size.y();
+    const auto HALF_HEIGHT = 0.5F * size.z();
+
+    constexpr size_t NUM_BOX_VERTICES = 8;
+
+    std::array<Vec3, NUM_BOX_VERTICES> vertices = {
+        Vec3(HALF_WIDTH, -HALF_DEPTH, -HALF_HEIGHT),
+        Vec3(HALF_WIDTH, HALF_DEPTH, -HALF_HEIGHT),
+        Vec3(-HALF_WIDTH, HALF_DEPTH, -HALF_HEIGHT),
+        Vec3(-HALF_WIDTH, -HALF_DEPTH, -HALF_HEIGHT),
+        Vec3(HALF_WIDTH, -HALF_DEPTH, HALF_HEIGHT),
+        Vec3(HALF_WIDTH, HALF_DEPTH, HALF_HEIGHT),
+        Vec3(-HALF_WIDTH, HALF_DEPTH, HALF_HEIGHT),
+        Vec3(-HALF_WIDTH, -HALF_DEPTH, HALF_HEIGHT)};
+
+    for (auto& vertex : vertices) {
+        vertex = Vec3(pose * vertex);
+    }
+
+    DrawLine(vertices[0], vertices[1], color);
+    DrawLine(vertices[1], vertices[2], color);
+    DrawLine(vertices[2], vertices[3], color);
+    DrawLine(vertices[3], vertices[0], color);
+
+    DrawLine(vertices[1], vertices[5], color);
+    DrawLine(vertices[5], vertices[6], color);
+    DrawLine(vertices[6], vertices[2], color);
+    DrawLine(vertices[2], vertices[1], color);
+
+    DrawLine(vertices[5], vertices[6], color);
+    DrawLine(vertices[6], vertices[7], color);
+    DrawLine(vertices[7], vertices[4], color);
+    DrawLine(vertices[4], vertices[5], color);
+
+    DrawLine(vertices[4], vertices[7], color);
+    DrawLine(vertices[7], vertices[3], color);
+    DrawLine(vertices[3], vertices[0], color);
+    DrawLine(vertices[0], vertices[4], color);
+
+    DrawLine(vertices[2], vertices[6], color);
+    DrawLine(vertices[6], vertices[7], color);
+    DrawLine(vertices[7], vertices[3], color);
+    DrawLine(vertices[3], vertices[2], color);
+
+    DrawLine(vertices[1], vertices[5], color);
+    DrawLine(vertices[5], vertices[4], color);
+    DrawLine(vertices[4], vertices[0], color);
+    DrawLine(vertices[0], vertices[1], color);
 }
 
 auto OpenGLDebugDrawer::Render(const Camera& camera) -> void {
@@ -153,7 +206,10 @@ auto OpenGLDebugDrawer::_RenderBatchOfLines(
     m_LinesVAO->Unbind();
 }
 
-auto OpenGLDebugDrawer::ClearCounters() -> void { m_NumDrawCalls = 0; }
+auto OpenGLDebugDrawer::ClearCounters() -> void {
+    m_NumDrawCalls = 0;
+    m_NumLinesDrawn = 0;
+}
 
 auto OpenGLDebugDrawer::ToString() const -> std::string {
     return fmt::format(

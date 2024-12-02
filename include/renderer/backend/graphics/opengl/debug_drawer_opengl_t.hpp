@@ -49,6 +49,12 @@ class RENDERER_API OpenGLDebugDrawer {
     /// \param[in] color The color of the line to be drawn
     auto DrawLine(Vec3 start, Vec3 end, Vec3 color) -> void;
 
+    /// Requests a cuboid to be drawn with the given properties
+    /// \param[in] size The size of the box (width, depth, height)
+    /// \param[in] pose The pose of the box in world space
+    /// \param[in] color The color of the box to be drawn
+    auto DrawBox(Vec3 size, Pose pose, Vec3 color) -> void;
+
     /// Renders all primitives from the given viewpoint
     /// \param[in] camera The camera used to render from
     auto Render(const Camera& camera) -> void;
@@ -59,6 +65,11 @@ class RENDERER_API OpenGLDebugDrawer {
     /// Returns the number of drawcalls spent during the render process
     RENDERER_NODISCARD auto num_drawcalls() const -> size_t {
         return m_NumDrawCalls;
+    }
+
+    /// Returns the number of lines drawn during the render process
+    RENDERER_NODISCARD auto num_lines() const -> size_t {
+        return m_NumLinesDrawn;
     }
 
     /// Returns a string representation of this debug drawer
@@ -80,6 +91,9 @@ class RENDERER_API OpenGLDebugDrawer {
 
     /// Container for all lines being requested by the user
     std::vector<Line> m_LinesContainer;
+
+    /// Counter for the number of lines drawn in one step
+    size_t m_NumLinesDrawn{0};
 
     /// Counter for the number of draw calls spent by this object
     size_t m_NumDrawCalls{0};
