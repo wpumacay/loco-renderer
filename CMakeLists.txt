@@ -66,7 +66,6 @@ loco_create_target(RendererCpp SHARED
     # ${SOURCE_DIR}/geometry/geometry_factory.cpp
     # ${SOURCE_DIR}/light/light_t.cpp
     # ${SOURCE_DIR}/material/material_t.cpp
-    # ${SOURCE_DIR}/debug/debug_drawer_t.cpp
     # ${SOURCE_DIR}/engine/application_t.cpp
     ${SOURCE_DIR}/engine/object_t.cpp
     ${SOURCE_DIR}/engine/scene_t.cpp
@@ -76,6 +75,7 @@ loco_create_target(RendererCpp SHARED
     ${SOURCE_DIR}/engine/fps_camera_controller_t.cpp
     ${SOURCE_DIR}/engine/renderer_t.cpp
     ${SOURCE_DIR}/backend/graphics/opengl/renderer_opengl_t.cpp
+    ${SOURCE_DIR}/backend/graphics/opengl/debug_drawer_opengl_t.cpp
   INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   TARGET_DEPENDENCIES

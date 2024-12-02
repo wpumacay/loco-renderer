@@ -4,6 +4,7 @@
 
 #include <renderer/engine/renderer_t.hpp>
 #include <renderer/backend/graphics/opengl/resources_manager_t.hpp>
+#include <renderer/backend/graphics/opengl/debug_drawer_opengl_t.hpp>
 
 namespace renderer {
 namespace opengl {
@@ -27,6 +28,7 @@ class RENDERER_API OpenGLRenderer : public ::renderer::IRenderer {
         return m_NumDrawcalls;
     }
 
+    /// Returns a string representation of the renderer
     RENDERER_NODISCARD auto ToString() const -> std::string override;
 
  protected:
@@ -35,6 +37,9 @@ class RENDERER_API OpenGLRenderer : public ::renderer::IRenderer {
 
     /// Resources manager to handle shaders and textures
     ResourcesManager::uptr m_ResourcesManager{nullptr};
+
+    /// Debug drawer to be used to render debug primitives
+    OpenGLDebugDrawer::uptr m_DebugDrawer{nullptr};
 };
 
 }  // namespace opengl

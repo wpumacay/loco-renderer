@@ -12,27 +12,20 @@ namespace opengl {
 
 OpenGLRenderer::OpenGLRenderer() {
     m_ResourcesManager = std::make_unique<ResourcesManager>();
+    m_DebugDrawer = std::make_unique<OpenGLDebugDrawer>();
 }
 
 auto OpenGLRenderer::DrawLine(Vec3 start, Vec3 end, Vec3 color) -> void {
-    /// TODO(wilbert): implement using debug drawer
-    LOG_CORE_TRACE(
-        "DrawLine(\n"
-        "  start: {0}\n"
-        "  end: {1}\n"
-        "  color: {2}\n"
-        ")\n",
-        start.toString(), end.toString(), color.toString());
+    if (m_DebugDrawer) {
+        m_DebugDrawer->DrawLine(start, end, color);
+    }
 }
 
 auto OpenGLRenderer::Render(Scene::ptr scene, Camera::ptr camera) -> void {
-    /// TODO(wilbert): implement rendering pipeline
-    LOG_CORE_TRACE(
-        "Render(\n"
-        "  scene: {0}\n"
-        "  camera: {1}\n"
-        ")\n",
-        scene->name(), camera->name());
+    // Render debug primitives on top of everything else
+    if (m_DebugDrawer) {
+        m_DebugDrawer->Render(*camera);
+    }
 }
 
 auto OpenGLRenderer::ToString() const -> std::string {
