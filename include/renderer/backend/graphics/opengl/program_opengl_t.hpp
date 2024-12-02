@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -82,10 +81,10 @@ class RENDERER_API OpenGLProgram {
 
  private:
     /// Source code for the vertex shader stage
-    std::string m_VertSource{};
+    std::string m_VertSource;
 
     /// Source code for the fragment shader stage
-    std::string m_FragSource{};
+    std::string m_FragSource;
 
     // THe OpenGL ID associated to this program
     uint32_t m_OpenGLId{0};
