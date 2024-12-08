@@ -58,9 +58,15 @@ auto Geometry::AddAttribute(std::string attrib_name, eElementType attrib_type,
 }
 
 auto Geometry::SetIndices(size_t n_indices, const uint32_t* data) -> void {
-    if (this->indices != nullptr) {
+    if (data == nullptr) {
         LOG_CORE_WARN(
-            "Geometry::AddAttribute >>> indices attrib already exists");
+            "Geometry::SetIndices >>> received nullptr for data. Must provide "
+            "a valid pointer to the indices data");
+        return;
+    }
+
+    if (this->indices != nullptr) {
+        LOG_CORE_WARN("Geometry::SetIndices >>> indices attrib already exists");
         return;
     }
     this->indices = std::make_unique<Uint32BufferAttribute>(n_indices, data);
