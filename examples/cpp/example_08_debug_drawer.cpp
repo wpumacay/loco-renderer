@@ -19,7 +19,7 @@ auto main() -> int {
     constexpr int WINDOW_WIDTH = 800;
     constexpr int WINDOW_HEIGHT = 600;
 
-    auto window = ::renderer::Window::CreateWindow(
+    auto window = ::renderer::Window::Create(
         WINDOW_WIDTH, WINDOW_HEIGHT, ::renderer::eWindowBackend::TYPE_GLFW);
     window->RegisterKeyboardCallback([&](int key, int action, int) {
         if (key == ::renderer::keys::KEY_ESCAPE &&

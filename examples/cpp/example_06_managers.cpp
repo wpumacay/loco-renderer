@@ -40,7 +40,7 @@ auto main() -> int {
     win_config.gl_version_major = 3;
     win_config.gl_version_minor = 3;
 
-    g_engine.window = ::renderer::Window::CreateWindow(win_config);
+    g_engine.window = ::renderer::Window::Create(win_config);
     g_engine.window->RegisterKeyboardCallback([&](int key, int action, int) {
         g_engine.input_manager->CallbackKey(key, action);
         if (key == ::renderer::keys::KEY_ESCAPE) {

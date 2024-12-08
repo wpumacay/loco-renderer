@@ -31,7 +31,7 @@ auto main() -> int {
     float g_window_aspect = static_cast<float>(g_window_width) /
                             static_cast<float>(g_window_height);
 
-    auto window = ::renderer::Window::CreateWindow(
+    auto window = ::renderer::Window::Create(
         WINDOW_WIDTH, WINDOW_HEIGHT, ::renderer::eWindowBackend::TYPE_GLFW);
     window->RegisterKeyboardCallback([&](int key, int action, int) {
         if (key == ::renderer::keys::KEY_ESCAPE &&

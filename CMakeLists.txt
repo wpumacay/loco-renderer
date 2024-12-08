@@ -80,11 +80,17 @@ loco_create_target(RendererCpp SHARED
   INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   TARGET_DEPENDENCIES
-    OpenGL::OpenGL glfw::glfw math::math utils::utils stb glad
+    ${OPENGL_LIBRARIES} glfw::glfw math::math utils::utils stb
   CXX_STANDARD
     ${RENDERER_BUILD_CXX_STANDARD}
   WARNINGS_AS_ERRORS
     FALSE)
+
+target_sources(RendererCpp PUBLIC
+    ${PROJECT_SOURCE_DIR}/third_party/glad/gl.c
+    ${PROJECT_SOURCE_DIR}/third_party/glad/egl.c
+)
+target_include_directories(RendererCpp PUBLIC ${PROJECT_SOURCE_DIR}/third_party/glad)
 
 if (RENDERER_BUILD_IMGUI)
   set(RENDERER_IMGUI_DIR ${PROJECT_SOURCE_DIR}/third_party/imgui)

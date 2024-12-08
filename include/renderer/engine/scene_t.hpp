@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory>
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 #include <renderer/common.hpp>
 #include <renderer/engine/object_t.hpp>
@@ -44,7 +42,7 @@ class RENDERER_API Scene : public Object3D {
 
  private:
     /// Map used for storing object names and link to index in storage
-    std::unordered_map<std::string, ssize_t> m_Name2Id;
+    std::unordered_map<std::string, size_t> m_Name2Id;
 };
 
 }  // namespace renderer

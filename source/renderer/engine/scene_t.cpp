@@ -23,7 +23,7 @@ auto Scene::AddChild(Object3D::ptr obj) -> void {
     auto obj_name = obj->name();
     obj->parent = shared_from_this();
     this->children.push_back(std::move(obj));
-    m_Name2Id[obj_name] = static_cast<ssize_t>(this->children.size() - 1);
+    m_Name2Id[obj_name] = this->children.size() - 1;
 }
 
 auto Scene::ExistsChild(const std::string& name) -> bool {
@@ -55,7 +55,7 @@ auto Scene::GetChild(const std::string& name) -> Object3D::ptr {
     }
 
     auto obj_idx = m_Name2Id.at(name);
-    if (obj_idx < 0 || obj_idx >= static_cast<ssize_t>(this->children.size())) {
+    if (obj_idx < 0 || obj_idx >= this->children.size()) {
         LOG_CORE_WARN(
             "Scene::GetChild >>> object {0} has index out of range {1} "
             "/ {2}",

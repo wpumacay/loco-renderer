@@ -16,7 +16,11 @@ class RENDERER_API Window : public std::enable_shared_from_this<Window> {
     // cppcheck-suppress unknownMacro
     NO_COPY_NO_MOVE_NO_ASSIGN(Window)
 
-    DEFINE_SMART_POINTERS(Window)
+ public:
+    using ptr = std::shared_ptr<Window>;
+    using cptr = std::shared_ptr<const Window>;
+    using uptr = std::unique_ptr<Window>;
+    using cuptr = std::unique_ptr<const Window>;
 
  public:
     /// Creates a window from a given set of configuration options
@@ -29,11 +33,11 @@ class RENDERER_API Window : public std::enable_shared_from_this<Window> {
     ~Window() = default;
 
     /// Creates a window from some options
-    static auto CreateWindow(int width, int height, eWindowBackend backend)
-        -> std::shared_ptr<Window>;
+    static auto Create(int width, int height,
+                       eWindowBackend backend) -> std::shared_ptr<Window>;
 
     /// Creates a window from a given set of configuration options
-    static auto CreateWindow(WindowConfig win_cfg) -> std::shared_ptr<Window>;
+    static auto Create(WindowConfig win_cfg) -> std::shared_ptr<Window>;
 
     /// Initializes the window and backend-related resources
     auto Initialize() -> void;

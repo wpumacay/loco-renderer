@@ -48,12 +48,11 @@ void bindings_window(py::module m) {
         using Class = renderer::Window;
         constexpr auto ClassName = "Window";  // NOLINT
         py::class_<Class, Class::ptr>(m, ClassName)
-            .def_static("CreateWindow",
+            .def_static("Create",
                         static_cast<Class::ptr (*)(int, int, eWindowBackend)>(
-                            ::renderer::Window::CreateWindow))
-            .def_static("CreateWindow",
-                        static_cast<Class::ptr (*)(WindowConfig)>(
-                            ::renderer::Window::CreateWindow))
+                            ::renderer::Window::Create))
+            .def_static("Create", static_cast<Class::ptr (*)(WindowConfig)>(
+                                      ::renderer::Window::Create))
             .def("EnableCursor", &Class::EnableCursor)
             .def("DisableCursor", &Class::DisableCursor)
             .def("Begin", &Class::Begin)

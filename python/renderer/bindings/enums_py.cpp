@@ -7,7 +7,7 @@ namespace py = pybind11;
 namespace renderer {
 
 // NOLINTNEXTLINE
-auto bindings_enums(py::module m) {
+auto bindings_enums(py::module m) -> void {
     {
         using Enum = ::renderer::eGraphicsAPI;
         py::enum_<Enum>(m, "GraphicsAPI")

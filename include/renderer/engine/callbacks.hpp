@@ -6,13 +6,13 @@
 namespace renderer {
 
 /// Whether or not the shift keys were held down
-constexpr int32_t MOD_SHIFT = (1 << 0);
+constexpr int32_t KEY_MOD_SHIFT = (1 << 0);
 /// Whether or not the ctrl keys were held down
-constexpr int32_t MOD_CONTROL = (1 << 1);
+constexpr int32_t KEY_MOD_CONTROL = (1 << 1);
 /// Whether or not the alt keys were held down
-constexpr int32_t MOD_ALT = (1 << 2);
+constexpr int32_t KEY_MOD_ALT = (1 << 2);
 /// Whether or not the super key was held down
-constexpr int32_t MOD_SUPER = (1 << 3);
+constexpr int32_t KEY_MOD_SUPER = (1 << 3);
 
 /// Function signature for keyboard callbacks
 using KeyboardCallback = std::function<void(int, int, int)>;

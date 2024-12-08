@@ -60,7 +60,7 @@ auto main() -> int {
     win_config.gl_version_major = 3;
     win_config.gl_version_minor = 3;
 
-    auto window = ::renderer::Window::CreateWindow(win_config);
+    auto window = ::renderer::Window::Create(win_config);
     window->RegisterKeyboardCallback([&](int key, int, int) {
         if (key == ::renderer::keys::KEY_ESCAPE) {
             window->RequestClose();
