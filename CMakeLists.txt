@@ -77,6 +77,7 @@ loco_create_target(RendererCpp SHARED
     ${SOURCE_DIR}/backend/graphics/opengl/debug_drawer_opengl_t.cpp
     ${SOURCE_DIR}/engine/graphics/buffer_attribute_t.cpp
     ${SOURCE_DIR}/engine/graphics/geometry_t.cpp
+    ${SOURCE_DIR}/engine/graphics/geometry_factory_t.cpp
   INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   TARGET_DEPENDENCIES
@@ -90,7 +91,9 @@ target_sources(RendererCpp PUBLIC
     ${PROJECT_SOURCE_DIR}/third_party/glad/gl.c
     ${PROJECT_SOURCE_DIR}/third_party/glad/egl.c
 )
-target_include_directories(RendererCpp PUBLIC ${PROJECT_SOURCE_DIR}/third_party/glad)
+target_include_directories(
+  RendererCpp PUBLIC ${PROJECT_SOURCE_DIR}/third_party/glad
+)
 
 if (RENDERER_BUILD_IMGUI)
   set(RENDERER_IMGUI_DIR ${PROJECT_SOURCE_DIR}/third_party/imgui)
