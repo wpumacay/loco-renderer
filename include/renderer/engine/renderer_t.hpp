@@ -27,7 +27,7 @@ class RENDERER_API IRenderer {
     /// Renders the given scene to the current render target
     /// \param[in] scene The scene to be rendered
     /// \param[in] camera The camera to use as viewpoint for the render
-    virtual auto Render(Scene::ptr scene, Camera::ptr camera) -> void = 0;
+    virtual auto Render(const Scene& scene, const Camera& camera) -> void = 0;
 
     /// Enables/Disables the rendering pipeline (apart from debug drawer)
     auto SetEnabled(bool enable) -> void { m_Enabled = enable; }

@@ -21,10 +21,10 @@ auto OpenGLRenderer::DrawLine(Vec3 start, Vec3 end, Vec3 color) -> void {
     }
 }
 
-auto OpenGLRenderer::Render(Scene::ptr scene, Camera::ptr camera) -> void {
+auto OpenGLRenderer::Render(const Scene& scene, const Camera& camera) -> void {
     // Render debug primitives on top of everything else
     if (m_DebugDrawer) {
-        m_DebugDrawer->Render(*camera);
+        m_DebugDrawer->Render(camera);
     }
 }
 

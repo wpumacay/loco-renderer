@@ -40,7 +40,8 @@ auto Scene::RemoveChild(const std::string& name) -> void {
     }
 
     auto obj_idx = m_Name2Id.at(name);
-    this->children.erase(this->children.begin() + obj_idx);
+    this->children.erase(this->children.begin() +
+                         static_cast<int64_t>(obj_idx));
     m_Name2Id.erase(name);
     for (auto& [obj_name, idx] : m_Name2Id) {
         if (idx > obj_idx) {
@@ -55,7 +56,7 @@ auto Scene::GetChild(const std::string& name) -> Object3D::ptr {
     }
 
     auto obj_idx = m_Name2Id.at(name);
-    if (obj_idx < 0 || obj_idx >= this->children.size()) {
+    if (obj_idx >= this->children.size()) {
         LOG_CORE_WARN(
             "Scene::GetChild >>> object {0} has index out of range {1} "
             "/ {2}",

@@ -3,6 +3,8 @@
 #include <string>
 
 #include <renderer/engine/renderer_t.hpp>
+#include <renderer/backend/graphics/opengl/vertex_buffer_opengl_t.hpp>
+#include <renderer/backend/graphics/opengl/vertex_array_opengl_t.hpp>
 #include <renderer/backend/graphics/opengl/resources_manager_t.hpp>
 #include <renderer/backend/graphics/opengl/debug_drawer_opengl_t.hpp>
 
@@ -21,7 +23,7 @@ class RENDERER_API OpenGLRenderer : public ::renderer::IRenderer {
 
     auto DrawLine(Vec3 start, Vec3 end, Vec3 color) -> void override;
 
-    auto Render(Scene::ptr scene, Camera::ptr camera) -> void override;
+    auto Render(const Scene& scene, const Camera& camera) -> void override;
 
     /// Returns the number of drawcalls spent in a render call
     RENDERER_NODISCARD auto numDrawcalls() const -> int {
